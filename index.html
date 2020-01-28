@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>お絵かきできるSNS</title>
+<meta name="description" content="テスト" />
+<meta name="keywords" content="テスト" />
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+</head>
+<body>
+<canvas id="canvas" width="200" height="200"></canvas>
+<script>
+	can=document.getElementById("canvas");
+	ct=can.getContext("2d");
+	ct.beginPath();
+	ct.moveTo(0,100);
+	ct.lineTo(200,100);
+	ct.stroke();
+</script>
+</body>
+</html>
