@@ -59,6 +59,9 @@ ul {
 	padding:5px;
 	color:#FFF;
 }
+#palette_colors{
+	margin-bottom:3px;
+}
 
 #palette_colors td{
 	width:25px;
@@ -163,6 +166,7 @@ ul {
 <td id="color_15" onClick="Color(this);"></td>
 </tr>
 </table>
+その他：<input type="color" id="color_other" name="color" onChange="Color(this);">
 <!--/.palette_wrap--></div>
 <!--/.palette_inner--></div>
 </li>
@@ -188,23 +192,30 @@ ul {
 <!--/.palette--></div>
 <!--/.contents--></div>
 
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
 <script>
 var ox=0,oy=0,x=0,y=0;
 var mf=false;
 var ct;
 
 //カラー設定用変数（デフォルトは黒）
-var strColor="#000000";
+var strStrokeStyle="#000000";
 
 //カラー選択関数
 function Color(obj){
 	for ( i = 1; i <= 15; i++ ) {
 		id_name = "color_" + i;
 		if (id_name == obj.id){
+			id_name2 = "#" + id_name;
 			document.getElementById(id_name).classList.add('active');
 		} else {
 			document.getElementById(id_name).classList.remove('active');
 		}
+	}
+	if (obj.id == "color_other"){
+		strStrokeStyle = $("#color_other").val();
+	} else {
+		strStrokeStyle = "#" + $(id_name2).css("background-color").match(/\d+/g).map(function(a){return ("0" + parseInt(a).toString(16)).slice(-2)}).join("");
 	}
 }
 
@@ -266,7 +277,7 @@ function onMouseUp(event){
 }
 
 function drawLine(){
-	ct.strokeStyle="#000000";
+	ct.strokeStyle=strStrokeStyle;
 	ct.lineWidth=1;
 	ct.lineJoin="round";
 	ct.lineCap="round";
