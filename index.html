@@ -198,16 +198,13 @@ var strColor="#000000";
 
 //カラー選択関数
 function Color(obj){
-	try {
-		for ( i = 1; i <= 18; i++ ) {
-			id_name = "color_" + i;
-			if (id_name == obj.id){
-				document.getElementById(id_name).classList.add('active');
-			} else {
-				document.getElementById(id_name).classList.remove('active');
-			}
+	for ( i = 1; i <= 15; i++ ) {
+		id_name = "color_" + i;
+		if (id_name == obj.id){
+			document.getElementById(id_name).classList.add('active');
+		} else {
+			document.getElementById(id_name).classList.remove('active');
 		}
-	} catch (error) {
 	}
 }
 
