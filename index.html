@@ -174,8 +174,8 @@ ul {
 <div class="palette_inner">
 <div class="palette_wrap">
 <div class="palette_name">線の太さ<!--/.palette_name--></div>
-<input type="range" value="1" min="1" max="10" step="1" oninput="document.getElementById('output1').value=this.value">
-<output id="output1">1</output>pixel
+<input type="range" value="1" min="1" max="10" step="1" oninput="LineWidth(this)">
+<output id="LineWidthValue">1</output>pixel
 <!--/.palette_wrap--></div>
 <!--/.palette_inner--></div>
 </li>
@@ -200,6 +200,14 @@ var ct;
 
 //カラー設定用変数（デフォルトは黒）
 var strStrokeStyle="#000000";
+
+//線の太さ用変数（デフォルトは1px）
+var strLineWidth="1";
+
+function LineWidth(obj){
+	document.getElementById('LineWidthValue').value=obj.value;
+	strLineWidth=obj.value;
+}
 
 //カラー選択関数
 function Color(obj){
@@ -278,7 +286,7 @@ function onMouseUp(event){
 
 function drawLine(){
 	ct.strokeStyle=strStrokeStyle;
-	ct.lineWidth=1;
+	ct.lineWidth=strLineWidth;
 	ct.lineJoin="round";
 	ct.lineCap="round";
 	ct.beginPath();
