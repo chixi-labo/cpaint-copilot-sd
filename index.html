@@ -22,11 +22,30 @@ ul {
 	margin:0;
 	list-style: none;
 }
-#canvas {
+#canvasarea{
+	width: 800px;
+	height: 600px;
 	background-color:#FFF;
 }
-
-
+#canvasarea:after, #canvasarea:before {
+	content: "";
+	clear: both;
+	display: block;
+}
+#canvas{
+	z-index:2;
+}
+#canvas2{
+	z-index:1;
+}
+#canvas2,#canvas {
+	width: 800px;
+	height: 600px;
+	position: absolute;
+}
+#toolarea{
+	margin-top:15px;
+}
 .btn {
 	display: inline-block;
 	padding: 10px 15px;
@@ -127,14 +146,17 @@ ul {
 <body>
 <div class="contents">
 <div class="main">
+<div id="canvasarea">
 <canvas id="canvas" width="800" height="600"></canvas>
-<div>
+<canvas id="canvas2" width="800" height="600"></canvas>
+<!--/#canvasarea--></div>
+<div id="toolarea">
 <a href="#" class="btn">１つ前に戻す</a>
 <a href="#" class="btn">最初から書き直す</a>
 <a href="#" class="btn">左右反転</a>
 <a href="#" class="btn">フルスクリーン</a>
 <a href="#" class="btn">PNGで保存</a>
-</div>
+<!--/#toolarea--></div>
 <!--/.main--></div>
 <div class="palette">
 
@@ -183,8 +205,8 @@ ul {
 <div class="palette_inner">
 <div class="palette_wrap">
 <div class="palette_name">レイヤー<!--/.palette_name--></div>
-<p><label><input type="radio" checked>上レイヤー</label></p>
-<p><label><input type="radio">下レイヤー</label></p>
+<p><label><input type="radio" name="rdoLayer" checked>上レイヤー</label></p>
+<p><label><input type="radio" name="rdoLayer">下レイヤー</label></p>
 <!--/.palette_wrap--></div>
 <!--/.palette_inner--></div>
 </li>
@@ -197,6 +219,10 @@ ul {
 var ox=0,oy=0,x=0,y=0;
 var mf=false;
 var ct;
+
+var ox2=0,oy2=0,x2=0,y2=0;
+var mf2=false;
+var ct2;
 
 //カラー設定用変数（デフォルトは黒）
 var strStrokeStyle="#000000";
@@ -238,61 +264,132 @@ function mam_draw_init(){
 	can.addEventListener("mousemove",onMouseMove,false);
 	can.addEventListener("mouseup",onMouseUp,false);
 	ct=can.getContext("2d");
+
+	var can2;
+	can2=document.getElementById("canvas2");
+	can2.addEventListener("touchstart",onDown,false);
+	can2.addEventListener("touchmove",onMove,false);
+	can2.addEventListener("touchend",onUp,false);
+	can2.addEventListener("mousedown",onMouseDown,false);
+	can2.addEventListener("mousemove",onMouseMove,false);
+	can2.addEventListener("mouseup",onMouseUp,false);
+	ct2=can2.getContext("2d");
 }
 
 function onDown(event){
-	mf=true;
-	ox=event.touches[0].pageX-event.target.getBoundingClientRect().left-scx();
-	oy=event.touches[0].pageY-event.target.getBoundingClientRect().top -scy();
-	event.stopPropagation();
+	if ($('input[name="rdoLayer"]').eq(0).prop("checked")) {
+		if(mf){
+			x=event.touches[0].pageX-event.target.getBoundingClientRect().left-scx();
+			y=event.touches[0].pageY-event.target.getBoundingClientRect().top -scy();
+			drawLine();
+			ox=x;
+			oy=y;
+			event.preventDefault();
+			event.stopPropagation();
+		}
+	} else {
+		if(mf2){
+			x2=event.touches[0].pageX-event.target.getBoundingClientRect().left-scx();
+			y2=event.touches[0].pageY-event.target.getBoundingClientRect().top -scy();
+			drawLine();
+			ox2=x2;
+			oy2=y2;
+			event.preventDefault();
+			event.stopPropagation();
+		}
+	}
 }
 
 function onMouseDown(event){
-	mf=true;
-	ox=event.clientX-event.target.getBoundingClientRect().left;
-	oy=event.clientY-event.target.getBoundingClientRect().top ;
+	if ($('input[name="rdoLayer"]').eq(0).prop("checked")) {
+		ox=event.clientX-event.target.getBoundingClientRect().left;
+		oy=event.clientY-event.target.getBoundingClientRect().top ;
+		mf=true;
+	} else {
+		ox2=event.clientX-event.target.getBoundingClientRect().left;
+		oy2=event.clientY-event.target.getBoundingClientRect().top;
+		mf2=true;
+	}
 }
 
 function onMove(event){
-	if(mf){
-		x=event.touches[0].pageX-event.target.getBoundingClientRect().left-scx();
-		y=event.touches[0].pageY-event.target.getBoundingClientRect().top -scy();
-		drawLine();
-		ox=x;
-		oy=y;
-		event.preventDefault();
-		event.stopPropagation();
+	if ($('input[name="rdoLayer"]').eq(0).prop("checked")) {
+		if(mf){
+			x=event.clientX-event.target.getBoundingClientRect().left;
+			y=event.clientY-event.target.getBoundingClientRect().top ;
+			drawLine();
+			ox=x;
+			oy=y;
+		}
+	} else {
+		if(mf2){
+			x2=event.clientX-event.target.getBoundingClientRect().left;
+			y2=event.clientY-event.target.getBoundingClientRect().top;
+			drawLine();
+			ox2=x2;
+			oy2=y2;
+		}
 	}
 }
 
 function onMouseMove(event){
-	if(mf){
-		x=event.clientX-event.target.getBoundingClientRect().left;
-		y=event.clientY-event.target.getBoundingClientRect().top;
-		drawLine();
-		ox=x;
-		oy=y;
+	if ($('input[name="rdoLayer"]').eq(0).prop("checked")) {
+		if(mf){
+			x=event.clientX-event.target.getBoundingClientRect().left;
+			y=event.clientY-event.target.getBoundingClientRect().top ;
+			drawLine();
+			ox=x;
+			oy=y;
+		}
+	} else {
+		if(mf2){
+			x2=event.clientX-event.target.getBoundingClientRect().left;
+			y2=event.clientY-event.target.getBoundingClientRect().top;
+			drawLine();
+			ox2=x2;
+			oy2=y2;
+		}
 	}
 }
 
 function onUp(event){
-	mf=false;
-	event.stopPropagation();
+	if ($('input[name="rdoLayer"]').eq(0).prop("checked")) {
+		mf=false;
+		event.stopPropagation();
+	} else {
+		mf2=false;
+		event.stopPropagation();
+	}
 }
 
 function onMouseUp(event){
-	mf=false;
+	if ($('input[name="rdoLayer"]').eq(0).prop("checked")) {
+		mf=false;
+	} else {
+		mf2=false;
+	}
 }
 
 function drawLine(){
-	ct.strokeStyle=strStrokeStyle;
-	ct.lineWidth=strLineWidth;
-	ct.lineJoin="round";
-	ct.lineCap="round";
-	ct.beginPath();
-	ct.moveTo(ox,oy);
-	ct.lineTo(x,y);
-	ct.stroke();
+	if ($('input[name="rdoLayer"]').eq(0).prop("checked")) {
+		ct.strokeStyle=strStrokeStyle;
+		ct.lineWidth=strLineWidth;
+		ct.lineJoin="round";
+		ct.lineCap="round";
+		ct.beginPath();
+		ct.moveTo(ox,oy);
+		ct.lineTo(x,y);
+		ct.stroke();
+	} else {
+		ct2.strokeStyle=strStrokeStyle;
+		ct2.lineWidth=strLineWidth;
+		ct2.lineJoin="round";
+		ct2.lineCap="round";
+		ct2.beginPath();
+		ct2.moveTo(ox2,oy2);
+		ct2.lineTo(x2,y2);
+		ct2.stroke();
+	}
 }
 
 function scx(){return document.documentElement.scrollLeft || document.body.scrollLeft;}
