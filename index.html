@@ -5,8 +5,13 @@
 <title>お絵かきできるSNS</title>
 <link rel="manifest" href="manifest.json">
 <style>
+html{
+	background-color:#F6DDC9;
+}
 body {
 	background-color:#F6DDC9;
+	margin:0;
+	padding:8px;
 }
 .contents{
 	display: flex;
@@ -141,7 +146,7 @@ ul {
 }
 </style>
 </head>
-<body>
+<body id="screen">
 <div class="contents">
 <div class="main">
 <div id="canvasarea">
@@ -152,7 +157,7 @@ ul {
 <a href="#" class="btn">１つ前に戻す</a>
 <a href="#" class="btn">最初から書き直す</a>
 <a href="#" class="btn">左右反転</a>
-<a href="#" class="btn">フルスクリーン</a>
+<a href="#" class="btn" onclick="doFullscreen();">フルスクリーン</a>
 <a href="#" class="btn" onclick="saveCanvas();">PNGで保存</a>
 <!--/#toolarea--></div>
 <!--/.main--></div>
@@ -227,6 +232,36 @@ var strStrokeStyle="#000000";
 
 //線の太さ用変数（デフォルトは1px）
 var strLineWidth="1";
+
+var blFullscreen = true;
+function doFullscreen(){
+	var elem = document.getElementById("screen");
+	if (blFullscreen){
+		if (elem.requestFullscreen) {
+		  elem.requestFullscreen();
+		} else if (elem.webkitRequestFullScreen) {
+		  elem.webkitRequestFullScreen();
+		} else if (elem.mozRequestFullScreen) {
+		  elem.mozRequestFullScreen();
+		} else if (elem.msRequestFullscreen) {
+		  elem.msRequestFullscreen();
+		}
+		blFullscreen = false;
+	} else {
+		if (document.webkitCancelFullScreen) {
+			document.webkitCancelFullScreen();
+		} else if (document.mozCancelFullScreen) {
+			document.mozCancelFullScreen();
+		} else if (document.msExitFullscreen) {
+			document.msExitFullscreen();
+		} else if(document.cancelFullScreen) {
+			document.cancelFullScreen();
+		} else if(document.exitFullscreen) {
+			document.exitFullscreen();
+		}
+		blFullscreen = true;
+	}
+}
 
 function LineWidth(obj){
 	document.getElementById('LineWidthValue').value=obj.value;
@@ -402,10 +437,10 @@ function saveCanvas(){
 		src2_img.src = $("#canvas2")[0].toDataURL();
 		src2_img.addEventListener('load', function() {
 			var dst_canvas = document.createElement('canvas');
-			dst_canvas.width = 800;
-			dst_canvas.height = 600;
-			dst_canvas.getContext("2d").drawImage(src1_img, 0, 0, 800, 600);
-			dst_canvas.getContext("2d").drawImage(src2_img, 0, 0, 800, 600);
+			dst_canvas.width = $("#canvas").width();
+			dst_canvas.height = $("#canvas").height();
+			dst_canvas.getContext("2d").drawImage(src1_img, 0, 0, $("#canvas").width(), $("#canvas").height());
+			dst_canvas.getContext("2d").drawImage(src2_img, 0, 0, $("#canvas").width(), $("#canvas").height());
 
 			var imageType = "image/png";
 			var fileName = "download.png";
