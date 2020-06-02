@@ -156,7 +156,7 @@ ul {
 <div id="toolarea">
 <a href="#" class="btn">１つ前に戻す</a>
 <a href="#" class="btn">最初から書き直す</a>
-<a href="#" class="btn">左右反転</a>
+<a href="#" class="btn" onclick="doReflect();">左右反転</a>
 <a href="#" class="btn" onclick="doFullscreen();">フルスクリーン</a>
 <a href="#" class="btn" onclick="saveCanvas();">PNGで保存</a>
 <!--/#toolarea--></div>
@@ -232,6 +232,19 @@ var strStrokeStyle="#000000";
 
 //線の太さ用変数（デフォルトは1px）
 var strLineWidth="1";
+
+var blReflect = true;
+function doReflect(){
+	if (blReflect){
+		$("#canvas").css('transform', 'scale(-1, 1)');
+		$("#canvas2").css('transform', 'scale(-1, 1)');
+		blReflect = false;
+	} else {
+		$("#canvas").css('transform', 'scale(1, 1)');
+		$("#canvas2").css('transform', 'scale(1, 1)');
+		blReflect = true;
+	}
+}
 
 var blFullscreen = true;
 function doFullscreen(){
@@ -312,7 +325,11 @@ function mam_draw_init(){
 function onDown(event){
 	if ($('input[name="rdoLayer"]').eq(0).prop("checked")) {
 		if(mf){
-			x=event.touches[0].pageX-event.target.getBoundingClientRect().left-scx();
+			if (blReflect) {
+				x=event.touches[0].pageX-event.target.getBoundingClientRect().left-scx();
+			} else {
+				x=$("#canvas").width() + (parseInt($("body").css('padding-left')) * 2) - event.touches[0].pageX-event.target.getBoundingClientRect().left-scx();
+			}
 			y=event.touches[0].pageY-event.target.getBoundingClientRect().top -scy();
 			drawLine();
 			ox=x;
@@ -322,7 +339,11 @@ function onDown(event){
 		}
 	} else {
 		if(mf2){
-			x2=event.touches[0].pageX-event.target.getBoundingClientRect().left-scx();
+			if (blReflect) {
+				x2=event.touches[0].pageX-event.target.getBoundingClientRect().left-scx();
+			} else {
+				x2=$("#canvas").width() + (parseInt($("body").css('padding-left')) * 2) - event.touches[0].pageX-event.target.getBoundingClientRect().left-scx();
+			}
 			y2=event.touches[0].pageY-event.target.getBoundingClientRect().top -scy();
 			drawLine();
 			ox2=x2;
@@ -335,11 +356,19 @@ function onDown(event){
 
 function onMouseDown(event){
 	if ($('input[name="rdoLayer"]').eq(0).prop("checked")) {
-		ox=event.clientX-event.target.getBoundingClientRect().left;
+		if (blReflect) {
+			ox=event.clientX-event.target.getBoundingClientRect().left;
+		} else {
+			ox=$("#canvas").width() + (parseInt($("body").css('padding-left')) * 2) - event.clientX-event.target.getBoundingClientRect().left;
+		}
 		oy=event.clientY-event.target.getBoundingClientRect().top ;
 		mf=true;
 	} else {
-		ox2=event.clientX-event.target.getBoundingClientRect().left;
+		if (blReflect) {
+			ox2=event.clientX-event.target.getBoundingClientRect().left;
+		} else {
+			ox2=$("#canvas").width() + (parseInt($("body").css('padding-left')) * 2) - event.clientX-event.target.getBoundingClientRect().left;
+		}
 		oy2=event.clientY-event.target.getBoundingClientRect().top;
 		mf2=true;
 	}
@@ -348,7 +377,11 @@ function onMouseDown(event){
 function onMove(event){
 	if ($('input[name="rdoLayer"]').eq(0).prop("checked")) {
 		if(mf){
-			x=event.clientX-event.target.getBoundingClientRect().left;
+			if (blReflect) {
+				x=event.clientX-event.target.getBoundingClientRect().left;
+			} else {
+				x=$("#canvas").width() + (parseInt($("body").css('padding-left')) * 2) - event.clientX-event.target.getBoundingClientRect().left;
+			}
 			y=event.clientY-event.target.getBoundingClientRect().top ;
 			drawLine();
 			ox=x;
@@ -356,7 +389,11 @@ function onMove(event){
 		}
 	} else {
 		if(mf2){
-			x2=event.clientX-event.target.getBoundingClientRect().left;
+			if (blReflect) {
+				x2=event.clientX-event.target.getBoundingClientRect().left;
+			} else {
+				x2=$("#canvas").width() + (parseInt($("body").css('padding-left')) * 2) - event.clientX-event.target.getBoundingClientRect().left;
+			}
 			y2=event.clientY-event.target.getBoundingClientRect().top;
 			drawLine();
 			ox2=x2;
@@ -368,7 +405,11 @@ function onMove(event){
 function onMouseMove(event){
 	if ($('input[name="rdoLayer"]').eq(0).prop("checked")) {
 		if(mf){
-			x=event.clientX-event.target.getBoundingClientRect().left;
+			if (blReflect) {
+				x=event.clientX-event.target.getBoundingClientRect().left;
+			} else {
+				x=$("#canvas").width() + (parseInt($("body").css('padding-left')) * 2) - event.clientX-event.target.getBoundingClientRect().left;
+			}
 			y=event.clientY-event.target.getBoundingClientRect().top ;
 			drawLine();
 			ox=x;
@@ -376,7 +417,11 @@ function onMouseMove(event){
 		}
 	} else {
 		if(mf2){
-			x2=event.clientX-event.target.getBoundingClientRect().left;
+			if (blReflect) {
+				x2=event.clientX-event.target.getBoundingClientRect().left;
+			} else {
+				x2=$("#canvas").width() + (parseInt($("body").css('padding-left')) * 2) - event.clientX-event.target.getBoundingClientRect().left;
+			}
 			y2=event.clientY-event.target.getBoundingClientRect().top;
 			drawLine();
 			ox2=x2;
