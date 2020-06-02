@@ -155,7 +155,7 @@ ul {
 <!--/#canvasarea--></div>
 <div id="toolarea">
 <a href="#" class="btn">１つ前に戻す</a>
-<a href="#" class="btn">最初から書き直す</a>
+<a href="#" class="btn" onclick="doClear();">最初から書き直す</a>
 <a href="#" class="btn" onclick="doReflect();">左右反転</a>
 <a href="#" class="btn" onclick="doFullscreen();">フルスクリーン</a>
 <a href="#" class="btn" onclick="saveCanvas();">PNGで保存</a>
@@ -232,6 +232,13 @@ var strStrokeStyle="#000000";
 
 //線の太さ用変数（デフォルトは1px）
 var strLineWidth="1";
+
+function doClear(){
+	if(confirm('本当にいいんですね？')){
+		ct.clearRect(0, 0, $("#canvas").width(), $("#canvas").height());
+		ct2.clearRect(0, 0, $("#canvas2").width(), $("#canvas2").height());
+	}
+}
 
 var blReflect = true;
 function doReflect(){
