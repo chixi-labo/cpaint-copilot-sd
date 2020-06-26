@@ -154,7 +154,7 @@ ul {
 <canvas id="canvas2" width="800" height="600"></canvas>
 <!--/#canvasarea--></div>
 <div id="toolarea">
-<a href="#" class="btn">１つ前に戻す</a>
+<a href="#" class="btn" onclick="doPrevCanvas();">１つ前に戻す</a>
 <a href="#" class="btn" onclick="doClear();">最初から書き直す</a>
 <a href="#" class="btn" onclick="doReflect();">左右反転</a>
 <a href="#" class="btn" onclick="doFullscreen();">フルスクリーン</a>
@@ -233,6 +233,70 @@ var strStrokeStyle="#000000";
 //線の太さ用変数（デフォルトは1px）
 var strLineWidth="1";
 
+// ストレージの初期化
+var myStorage = localStorage;
+
+function initLocalStorage(){
+	myStorage.setItem("__layer", JSON.stringify([]));
+	myStorage.setItem("__layer2", JSON.stringify([]));
+}
+
+function setLocalStoreage(){
+	var png = $("#canvas")[0].toDataURL();
+	var logs = JSON.parse(myStorage.getItem("__layer"));
+	setTimeout(function(){
+		logs.unshift({png});
+		myStorage.setItem("__layer", JSON.stringify(logs));
+	}, 0);
+	var png2 = $("#canvas2")[0].toDataURL();
+	var logs2 = JSON.parse(myStorage.getItem("__layer2"));
+	setTimeout(function(){
+		logs2.unshift({png2});
+		myStorage.setItem("__layer2", JSON.stringify(logs2));
+	}, 0);
+}
+
+function doPrevCanvas(){
+	var logs = JSON.parse(myStorage.getItem("__layer"));
+	if(logs.length > 0){
+		logs.shift();
+		setTimeout(function(){
+			myStorage.setItem("__layer", JSON.stringify(logs));
+			ct.clearRect(0, 0, $("#canvas").width(), $("#canvas").height());
+			if (logs.length == 0) {
+				draw("canvas",logs["png"]);
+			} else {
+				draw("canvas",logs[0]["png"]);
+			}
+		}, 0);
+	}
+	var logs2 = JSON.parse(myStorage.getItem("__layer2"));
+	if(logs2.length > 0){
+		logs2.shift();
+		setTimeout(function(){
+			myStorage.setItem("__layer2", JSON.stringify(logs2));
+			ct2.clearRect(0, 0, $("#canvas2").width(), $("#canvas2").height());
+			if (logs2.length == 0) {
+				draw("canvas2",logs2["png2"]);
+			} else {
+				draw("canvas2",logs2[0]["png2"]);
+			}
+		}, 0);
+	}
+}
+
+function draw(target,src) {
+	var img = new Image();
+	img.src = src;
+	img.onload = function() {
+		if (target == "canvas"){
+			ct.drawImage(img, 0, 0);
+		} else {
+			ct2.drawImage(img, 0, 0);
+		}
+	}
+}
+
 function doClear(){
 	if(confirm('本当にいいんですね？')){
 		ct.clearRect(0, 0, $("#canvas").width(), $("#canvas").height());
@@ -308,6 +372,8 @@ function Color(obj){
 
 //初期設定
 function mam_draw_init(){
+	initLocalStorage();
+
 	var can;
 	can=document.getElementById("canvas");
 	can.addEventListener("touchstart",onDown,false);
@@ -438,6 +504,7 @@ function onMouseMove(event){
 }
 
 function onUp(event){
+	setLocalStoreage();
 	if ($('input[name="rdoLayer"]').eq(0).prop("checked")) {
 		mf=false;
 		event.stopPropagation();
@@ -448,6 +515,7 @@ function onUp(event){
 }
 
 function onMouseUp(event){
+	setLocalStoreage();
 	if ($('input[name="rdoLayer"]').eq(0).prop("checked")) {
 		mf=false;
 	} else {
