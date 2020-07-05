@@ -199,7 +199,7 @@ ul {
 <div class="palette_inner">
 <div class="palette_wrap">
 <div class="palette_name">線の太さ<!--/.palette_name--></div>
-<input type="range" value="1" min="1" max="10" step="1" oninput="LineWidth(this)">
+<input id="rngLineWidth" type="range" value="1" min="1" max="10" step="1" oninput="LineWidth(this)">
 <output id="LineWidthValue">1</output>pixel
 <!--/.palette_wrap--></div>
 <!--/.palette_inner--></div>
@@ -610,6 +610,69 @@ function saveBlob(blob, fileName){
 	a.download = fileName;
 	// イベントの発火
 	a.dispatchEvent(event);
+}
+
+document.onkeydown = function(e) { 
+	var keycode,shift,ctrl,alt; 
+
+	if (e != null) { 
+		keycode = e.which; 
+		ctrl = typeof e.modifiers == 'undefined' ? ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) : e.modifiers & Event.CONTROL_MASK;
+		shift = typeof e.modifiers == 'undefined' ? e.shiftKey : e.modifiers & Event.SHIFT_MASK; 
+		alt = typeof e.modifiers == 'undefined' ? e.altKey : e.modifiers & Event.ALT_MASK; 
+		e.stopPropagation(); 
+	} else { 
+		keycode = event.keyCode; 
+		ctrl = event.ctrlKey; 
+		shift = event.shiftKey; 
+		alt = event.altKey; 
+		event.cancelBubble = true; 
+	}
+	keychar = String.fromCharCode(keycode).toUpperCase(); 
+
+	// ctrl同時押しの場合 
+	if (ctrl) { 
+		if (keychar == "Z") {
+			doPrevCanvas();
+		}
+		if (keychar == "&") {
+			$('input[name="rdoLayer"]').eq(0).trigger("click");
+		}
+		if (keychar == "(") {
+			$('input[name="rdoLayer"]').eq(1).trigger("click");
+		}
+		if (keychar == "'") {
+			if(parseInt($('#rngLineWidth').val()) <= parseInt($('#rngLineWidth').attr("max"))){
+				$('#rngLineWidth').val(parseInt($('#rngLineWidth').val())+1);
+				$('#rngLineWidth').trigger("input");
+			}
+		}
+		if (keychar == "%") {
+			if(parseInt($('#rngLineWidth').val()) >= parseInt($('#rngLineWidth').attr("min"))){
+				$('#rngLineWidth').val(parseInt($('#rngLineWidth').val())-1);
+				$('#rngLineWidth').trigger("input");
+			}
+		}
+		if (keychar == " ") {
+			$("#color_other").trigger("click");
+		}
+	}
+
+	// shift同時押しの場合 
+	if (shift) { 
+		if ((keychar == "'")||(keychar == "%")) {
+			doReflect();
+		}
+		if ((keychar == "N")||(keychar == "C")) {
+			doClear();
+		}
+		if (keychar == " ") {
+			doFullscreen();
+		}
+		if (keychar == "S") {
+			doSaveCanvas();
+		}
+	}
 }
 </script>
 </body>
