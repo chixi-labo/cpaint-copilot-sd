@@ -25,3 +25,6 @@
 ・好きな画像を下絵にしてトレースできるようにする
 
 ・Electron
+
+# GitHub Page  
+https://cardcapt.github.io/canvas_helloworld/
