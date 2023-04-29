@@ -1,4 +1,4 @@
-# canvas_helloworld
+# cpaint
 
 お絵かきできるSNSを作りたい！
 
