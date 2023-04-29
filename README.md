@@ -27,4 +27,4 @@
 ・Electron
 
 # GitHub Page  
-https://cardcapt.github.io/canvas_helloworld/
+https://cardcapt.github.io/cpaint/
