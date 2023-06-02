@@ -71,4 +71,5 @@ AIに送信した画像、さらに生成が終わるとその下にAIが生成�
 こちらのコードを搭載している、お絵かきできるイラストSNS [Chixi(ちぃ)]に生成した画像を投稿していただけると幸いです！  
 
 http://chixi.jp/  
+  
 ![txt2img-stable2](assets/Screenshot_Chixi.png)
