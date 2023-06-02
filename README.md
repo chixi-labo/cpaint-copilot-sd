@@ -19,7 +19,7 @@ set COMMANDLINE_ARGS=--xformers --api --cors-allow-origins=http://localhost:4212
 # 起動方法  
 初期設定を行った上でWindowsの場合、このファイルと同じ位置にある「start.bat」を実行します。  
 その他OSの場合は、「python server.py」などで起動してください。  
-「 Running on local URL http://127.0.0.1:4212 」という表示が出たら起動完了です。 
+「 Running on local URL http://127.0.0.1:4212 」という表示が出たら起動完了です。   
 AUTOMATIC1111氏の配布しているStable Diffusion web UIがインストールされていない環境でこのプログラムを実行した場合は必要なライブラリがインストールされていない場合があります。  
 その場合は適宜、pip installを行って下さい。
   
