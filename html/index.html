@@ -1,0 +1,2042 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>cpaint</title>
+<meta name="robots" content="noindex">
+<script
+			  src="https://code.jquery.com/jquery-3.7.0.min.js"
+			  integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
+			  crossorigin="anonymous"></script>
+<style>
+html{
+	background-color:#BFE3F5;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+#boxLayer, #canvasarea, #wrapper2 {
+	background-color: #fff;
+}
+#base,#canvas1,#canvas2{
+	width: 100%;
+	height: auto;
+	position: absolute;
+}
+#message{
+	width: 100%;
+	height: auto;
+	position: absolute;
+	padding-top:500px;
+	text-align:center;
+	margin: 0 auto;
+}
+#base{
+	z-index:1;
+}
+
+body {
+	background-color:#BFE3F5;
+	margin:0;
+	padding:8px;
+}
+.contents{
+	display: flex;
+	padding-top: 10px;
+	padding-right: 10px;
+	padding-left: 10px;
+	padding-bottom: 0px;
+}
+.palette{
+	/* padding-top:10px; */
+	padding-left:8px;
+}
+ul {
+	padding-left: 0;
+	margin:0;
+	list-style: none;
+}
+#canvasarea{
+	width: 700px;
+	height: 700px;
+	background-color:#FFF;
+}
+#canvasarea:after, #canvasarea:before {
+	content: "";
+	clear: both;
+	display: block;
+}
+#canvas1{
+	z-index:2;
+}
+#canvas2{
+	z-index:1;
+}
+#canvas2,#canvas1 {
+	width: 700px;
+	height: 700px;
+	position: absolute;
+    box-sizing: border-box;
+    border: #ccc 1px solid;
+}
+#toolarea{
+	margin-top:8px;
+}
+.palette_wrap .btn {
+	display: block;
+	padding: 10px 15px;
+	text-decoration: none;
+	text-align:center;
+	color: #FFF;
+	background: #2899F1;
+	border-radius:4px;
+	margin: 10px 0;
+	/* width:80%; */
+}
+.btnred:link{
+	padding: 20px;
+	font-weight: 700;
+    display: inline-block;
+	margin: 10px auto;
+	text-align: center;
+	background: #CB002E;
+	color: #fff;
+	border-radius: 4px;
+}
+.btn:hover,.btnred:hover{
+	text-decoration-line: none;
+	opacity: 0.7;
+}
+
+.red {
+	background: #CB002E;
+	color: #fff;
+}
+
+.palette_inner {
+	position: relative;
+	/* display: inline-block; */
+	margin-bottom:16px;
+}
+
+.palette_wrap {
+	background: #FFF;
+	border-radius:3px;
+	margin: 0 auto;
+	text-align: center;
+    padding: 10px 10px 15px;
+	/* width:170px; */
+}
+.palette_wrap .palette_name {
+	/* position: absolute; */
+	top: 10px;
+	/* left: 10px; */
+	/* width: 180px; */
+	background: #2899F1;
+	margin-bottom: 10px;
+	text-align:center;
+	padding:5px;
+	color:#fff;
+}
+.palette_wrap p{
+	line-height: 1.5em;
+	margin: auto;
+	text-align: center;
+}
+.palette_inner input[type="radio" i],
+.palette_inner input[type="radio"] {
+    margin: 0 10px;
+}
+fieldset legend{
+	font-weight:bold;
+}
+#palette_colors{
+	margin-bottom:10px;
+}
+
+#palette_colors td{
+	width:31px;
+	height:31px;
+	border-style:solid;
+	border-color:#fff;
+	border-width:2px;
+	box-sizing: border-box;
+}
+#palette_colors td#color_1{
+	background-color:#FFFFFF;
+    border: 1px solid #ccc;
+}
+#palette_colors td#color_2{
+	background-color:#000000;
+}
+#palette_colors td#color_3{
+	background-color:#800000;
+}
+#palette_colors td#color_4{
+	background-color:#FF0000;
+}
+#palette_colors td#color_5{
+	background-color:#800080;
+}
+#palette_colors td#color_6{
+	background-color:#FF00FF;
+}
+#palette_colors td#color_7{
+	background-color:#008000;
+}
+#palette_colors td#color_8{
+	background-color:#00FF00;
+}
+#palette_colors td#color_9{
+	background-color:#808000;
+}
+#palette_colors td#color_10{
+	background-color:#FFFF00;
+}
+#palette_colors td#color_11{
+	background-color:#000080;
+}
+#palette_colors td#color_12{
+	background-color:#0000FF;
+}
+#palette_colors td#color_13{
+	background-color:#008080;
+}
+#palette_colors td#color_14{
+	background-color:#EFC3AD;
+}
+#palette_colors td#color_15{
+	background-color:#FFEDDB;
+}
+#palette_colors .active{
+	border-style:solid;
+	border-color:#ff0000 !important;
+	border-width:2px !important;
+}
+input[type="color" i],
+input[type="color"]{
+	width: 35px !important;
+	height: 35px !important;
+	vertical-align: -8px !important;
+	border: none !important;
+	background: none !important;
+	padding: 0 !important;
+}
+.inline-radio {
+	display: flex;
+	flex-direction: column;
+	border-radius: 3px;
+	overflow: hidden;
+	border: 1px solid #b6b6b6;
+}
+.inline-radio div {
+	position: relative;
+	flex: 1;
+}
+.inline-radio input {
+	height: 3em;
+	width: 100%;
+}
+.inline-radio label {
+	position: absolute;
+	top: 0; left: 0;
+	width: 100%;
+	height: 100%;
+	background: #fff;
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+	border-right: 1px solid #b6b6b6;
+}
+.inline-radio div:last-child label {
+	border-right: 0;
+}
+.inline-radio input:checked + label {
+	background: #E3F2FB;
+	font-weight: 500;
+}
+.iconLayerVisible{
+	z-index:10;
+}
+</style>
+</head>
+<body id="screen">
+<div class="contents">
+<div class="main">
+<div id="canvasarea">
+<canvas id="canvas1" width="700" height="700"></canvas>
+<canvas id="canvas2" width="700" height="700"></canvas><!--/#canvasarea--></div>
+<!--/.main--></div>
+<div class="palette">
+
+<ul>
+<li>
+<div class="palette_inner">
+<div class="palette_wrap">
+<div class="palette_name">カラーパレット<!--/.palette_name--></div>
+<table id="palette_colors">
+<tr>
+<td id="color_1" onClick="Color(this);"></td>
+<td id="color_2" class="active" onClick="Color(this);"></td>
+<td id="color_3" onClick="Color(this);"></td>
+<td id="color_4" onClick="Color(this);"></td>
+<td id="color_5" onClick="Color(this);"></td>
+</tr>
+<tr>
+<td id="color_6" onClick="Color(this);"></td>
+<td id="color_7" onClick="Color(this);"></td>
+<td id="color_8" onClick="Color(this);"></td>
+<td id="color_9" onClick="Color(this);"></td>
+<td id="color_10" onClick="Color(this);"></td>
+</tr>
+<tr>
+<td id="color_11" onClick="Color(this);"></td>
+<td id="color_12" onClick="Color(this);"></td>
+<td id="color_13" onClick="Color(this);"></td>
+<td id="color_14" onClick="Color(this);"></td>
+<td id="color_15" onClick="Color(this);"></td>
+</tr>
+</table>
+その他：<input type="color" id="color_other" name="color" onChange="Color(this);">
+<!--/.palette_wrap--></div>
+<!--/.palette_inner--></div>
+</li>
+<li>
+<div class="palette_inner">
+<div class="palette_wrap linerange">
+<div class="palette_name">線の太さ<!--/.palette_name--></div>
+<span style="display: flex; justify-content: center;"><svg style="width: 52px;height: 52px;">
+  <circle cx="25" cy="25" r="1" id="rngLineWidthCircle" fill="#000" stroke="#DDD" stroke-width="1" /></circle>
+</svg></span>
+<p><output id="LineWidthValue">1</output>pixel</p>
+<input id="rngLineWidth" type="range" value="1" min="1" max="50" step="1" oninput="LineWidth(this)">
+<!--/.palette_wrap--></div>
+<!--/.palette_inner--></div>
+</li>
+<li>
+<div class="palette_inner">
+<div class="palette_wrap">
+<div class="palette_name">レイヤー<!--/.palette_name--></div>
+<group class="inline-radio">
+	<div onclick="doLayerChange('1')"><input type="radio" name="rdoLayer" checked><label>線画レイヤー<img class="iconLayer1Visible" src="./img/001-view.png" onclick="doLayerVisible('1')"></label></div>
+	<div onclick="doLayerChange('2')"><input type="radio" name="rdoLayer"><label>色塗りレイヤー<img class="iconLayer2Visible" src="./img/001-view.png" onclick="doLayerVisible('2')"></label></div>
+</group>
+<!--/.palette_wrap--></div>
+<!--/.palette_inner--></div>
+</li>
+<li>
+<div class="palette_inner">
+<div class="palette_wrap">
+<a href="javascript:void(0)" class="btn" onclick="doReflect();">左右反転</a>
+<a href="javascript:void(0)" class="btn" onclick="doPrevCanvas();">１つ戻す</a>
+<!--/.palette_wrap--></div>
+<!--/.palette_inner--></div>
+</li>
+</ul>
+<!--/.palette--></div>
+<!--/.contents--></div>
+
+<div>
+<input type="hidden" id="txtp1">
+<a id="add_prompt">描こうとしてるものを以下の選択肢から選んでください</a><br>
+<div class="menuarea">
+
+<style>
+fieldset{
+	margin-bottom: 10px;
+}
+label{
+	margin-right: 10px;
+}
+fieldset ul{
+	list-style: none;
+	padding-left: 0;
+	margin: 0;
+}
+fieldset ul li{
+	display: inline-block;
+	margin-bottom: 5px;
+}
+footer{
+	position: fixed;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	background: #fff;
+	padding-left:10px;
+	padding-right:10px;
+}
+body{
+	padding-bottom:80px;
+}
+</style>
+<script>
+let arrPronmpt = [];
+
+function btnGenerator(){
+	let strPronmpt = "";
+	let intVolume = 0;
+	let strBeforePronmpt = "";
+	let strAfterPronmpt = "";
+	let strRepeat = function(str, count) {
+		return (new Array(count + 1)).join(String(str));
+	};
+
+	//画風
+	if (document.frmMain.rdoPainting.value != ""){
+		for(var i=0; i<document.frmMain.rdoPainting.length; i++){
+			if(document.frmMain.rdoPainting[i].checked){
+				if (strPronmpt != ""){
+					strPronmpt = strPronmpt + ",";
+				}
+				strPronmpt = strPronmpt + document.frmMain.rdoPainting[i].value;
+			}
+		}
+	}
+
+	//シチュエーション
+	if (document.frmMain.rdoSituation.value != ""){
+		for(var i=0; i<document.frmMain.rdoSituation.length; i++){
+			if(document.frmMain.rdoSituation[i].checked){
+				if (strPronmpt != ""){
+					strPronmpt = strPronmpt + ",";
+				}
+				strPronmpt = strPronmpt + document.frmMain.rdoSituation[i].value;
+			}
+		}
+	}
+
+	//年齢
+	if (document.frmMain.rdoYears.value != ""){
+		for(var i=0; i<document.frmMain.rdoYears.length; i++){
+			if(document.frmMain.rdoYears[i].checked){
+				if (strPronmpt != ""){
+					strPronmpt = strPronmpt + ",";
+				}
+				strPronmpt = strPronmpt + document.frmMain.rdoYears[i].value;
+			}
+		}
+	}
+
+	//感情
+	for(var i=0; i<document.frmMain.chkEmotion.length; i++){
+		if(document.frmMain.chkEmotion[i].checked){
+			strAfterPronmpt = "";
+			if (strPronmpt != ""){
+				strPronmpt = strPronmpt + ",";
+			}
+			strPronmpt = strPronmpt + document.frmMain.chkEmotion[i].value;
+		}
+	}
+
+	//目
+	if (document.frmMain.rdoEyes.value != ""){
+		for(var i=0; i<document.frmMain.rdoEyes.length; i++){
+			if(document.frmMain.rdoEyes[i].checked){
+				if (strPronmpt != ""){
+					strPronmpt = strPronmpt + ",";
+				}
+				strPronmpt = strPronmpt + document.frmMain.rdoEyes[i].value;
+			}
+		}
+	}
+
+	//目のオプション
+	for(var i=0; i<document.frmMain.chkEyesOptions.length; i++){
+		if(document.frmMain.chkEyesOptions[i].checked){
+			strAfterPronmpt = "";
+			if (strPronmpt != ""){
+				strPronmpt = strPronmpt + ",";
+			}
+			strPronmpt = strPronmpt + document.frmMain.chkEyesOptions[i].value;
+		}
+	}
+
+	//髪型(前髪)
+	if (document.frmMain.rdoBangs.value != ""){
+		for(var i=0; i<document.frmMain.rdoBangs.length; i++){
+			if(document.frmMain.rdoBangs[i].checked){
+				if (strPronmpt != ""){
+					strPronmpt = strPronmpt + ",";
+				}
+				strPronmpt = strPronmpt + document.frmMain.rdoBangs[i].value;
+			}
+		}
+	}
+
+	//髪型
+	if (document.frmMain.rdoHair.value != ""){
+		for(var i=0; i<document.frmMain.rdoHair.length; i++){
+			if(document.frmMain.rdoHair[i].checked){
+				if (strPronmpt != ""){
+					strPronmpt = strPronmpt + ",";
+				}
+				strPronmpt = strPronmpt + document.frmMain.rdoHair[i].value;
+			}
+		}
+	}
+
+	//髪型オプション
+	for(var i=0; i<document.frmMain.chkHairOption.length; i++){
+		if(document.frmMain.chkHairOption[i].checked){
+			strAfterPronmpt = "";
+			if (strPronmpt != ""){
+				strPronmpt = strPronmpt + ",";
+			}
+			strPronmpt = strPronmpt + document.frmMain.chkHairOption[i].value;
+		}
+	}
+
+	//髪色
+	if (document.frmMain.rdoHairColor.value != ""){
+		for(var i=0; i<document.frmMain.rdoHairColor.length; i++){
+			if(document.frmMain.rdoHairColor[i].checked){
+				if (strPronmpt != ""){
+					strPronmpt = strPronmpt + ",";
+				}
+				strPronmpt = strPronmpt + document.frmMain.rdoHairColor[i].value;
+			}
+		}
+	}
+
+	//服装
+	if (document.frmMain.rdoClothing.value != ""){
+		for(var i=0; i<document.frmMain.rdoClothing.length; i++){
+			strAfterPronmpt = "";
+			if(document.frmMain.rdoClothing[i].checked){
+				if (strPronmpt != ""){
+					strPronmpt = strPronmpt + ",";
+				}
+				strPronmpt = strPronmpt + document.frmMain.rdoClothing[i].value;
+			}
+		}
+	}
+
+	//靴
+	if (document.frmMain.rdoShoes.value != ""){
+		for(var i=0; i<document.frmMain.rdoShoes.length; i++){
+			strAfterPronmpt = "";
+			if(document.frmMain.rdoShoes[i].checked){
+				if (strPronmpt != ""){
+					strPronmpt = strPronmpt + ",";
+				}
+				strPronmpt = strPronmpt + document.frmMain.rdoShoes[i].value;
+			}
+		}
+	}
+
+	//服装(オプション)
+	for(var i=0; i<document.frmMain.chkClothingOption.length; i++){
+		if(document.frmMain.chkClothingOption[i].checked){
+			strAfterPronmpt = "";
+			if (strPronmpt != ""){
+				strPronmpt = strPronmpt + ",";
+			}
+			strPronmpt = strPronmpt + document.frmMain.chkClothingOption[i].value;
+		}
+	}
+
+	//胸囲
+	if (document.frmMain.rdoBust.value != ""){
+		for(var i=0; i<document.frmMain.rdoBust.length; i++){
+			if(document.frmMain.rdoBust[i].checked){
+				if (strPronmpt != ""){
+					strPronmpt = strPronmpt + ",";
+				}
+				strPronmpt = strPronmpt + document.frmMain.rdoBust[i].value;
+			}
+		}
+	}
+
+	//身体的特徴
+	for(var i=0; i<document.frmMain.chkCharacteristics.length; i++){
+		if(document.frmMain.chkCharacteristics[i].checked){
+			strAfterPronmpt = "";
+			if (strPronmpt != ""){
+				strPronmpt = strPronmpt + ",";
+			}
+			strPronmpt = strPronmpt + document.frmMain.chkCharacteristics[i].value;
+		}
+	}
+
+	//ポーズ
+	if (document.frmMain.rdoPose.value != ""){
+		for(var i=0; i<document.frmMain.rdoPose.length; i++){
+			if(document.frmMain.rdoPose[i].checked){
+				if (strPronmpt != ""){
+					strPronmpt = strPronmpt + ",";
+				}
+				strPronmpt = strPronmpt + document.frmMain.rdoPose[i].value;
+			}
+		}
+	}
+
+	//ポーズ(オプション)
+	for(var i=0; i<document.frmMain.chkPoseOption.length; i++){
+		if(document.frmMain.chkPoseOption[i].checked){
+			strAfterPronmpt = "";
+			if (strPronmpt != ""){
+				strPronmpt = strPronmpt + ",";
+			}
+			strPronmpt = strPronmpt + document.frmMain.chkPoseOption[i].value;
+		}
+	}
+
+	//機種
+	if (document.frmMain.rdoCameraModel.value != ""){
+		for(var i=0; i<document.frmMain.rdoCameraModel.length; i++){
+			if(document.frmMain.rdoCameraModel[i].checked){
+				if (strPronmpt != ""){
+					strPronmpt = strPronmpt + ",";
+				}
+				strPronmpt = strPronmpt + document.frmMain.rdoCameraModel[i].value;
+			}
+		}
+	}
+
+	//焦点距離
+	if (document.frmMain.rdoCameraFocalLength.value != ""){
+		for(var i=0; i<document.frmMain.rdoCameraFocalLength.length; i++){
+			if(document.frmMain.rdoCameraFocalLength[i].checked){
+				if (strPronmpt != ""){
+					strPronmpt = strPronmpt + ",";
+				}
+				strPronmpt = strPronmpt + document.frmMain.rdoCameraFocalLength[i].value;
+			}
+		}
+	}
+
+	//F値
+	if (document.frmMain.rdoCameraFnumber.value != ""){
+		for(var i=0; i<document.frmMain.rdoCameraFnumber.length; i++){
+			if(document.frmMain.rdoCameraFnumber[i].checked){
+				if (strPronmpt != ""){
+					strPronmpt = strPronmpt + ",";
+				}
+				strPronmpt = strPronmpt + document.frmMain.rdoCameraFnumber[i].value;
+			}
+		}
+	}
+
+	//アングル
+	if (document.frmMain.rdoAngle.value != ""){
+		for(var i=0; i<document.frmMain.rdoAngle.length; i++){
+			if(document.frmMain.rdoAngle[i].checked){
+				if (strPronmpt != ""){
+					strPronmpt = strPronmpt + ",";
+				}
+				strPronmpt = strPronmpt + document.frmMain.rdoAngle[i].value;
+			}
+		}
+	}
+
+	//露光
+	if (document.frmMain.rdoLighting.value != ""){
+		for(var i=0; i<document.frmMain.rdoLighting.length; i++){
+			if(document.frmMain.rdoLighting[i].checked){
+				if (strPronmpt != ""){
+					strPronmpt = strPronmpt + ",";
+				}
+				strPronmpt = strPronmpt + document.frmMain.rdoLighting[i].value;
+			}
+		}
+	}
+
+	//オススメな言葉
+	for(var i=0; i<document.frmMain.chkRecommendation.length; i++){
+		if(document.frmMain.chkRecommendation[i].checked){
+			strAfterPronmpt = "";
+			if (strPronmpt != ""){
+				strPronmpt = strPronmpt + ",";
+			}
+			strPronmpt = strPronmpt + document.frmMain.chkRecommendation[i].value;
+		}
+	}
+
+	//document.frmMain.pronmpt.value = strPronmpt;
+	console.log("Pronmpt:"+$("#txtp1").val() + $("#txtp1-2").val());
+	$('#txtp1-2').val(strPronmpt);
+}
+</script>
+<form name="frmMain">
+<fieldset>
+<legend>画風</legend>
+<ul>
+<li><label><input type="radio" name="rdoPainting" value="" checked>設定なし</label></li>
+<li><label><input type="radio" name="rdoPainting" value="sketch">スケッチ</label></li>
+<li><label><input type="radio" name="rdoPainting" value="watercolor">水彩</label></li>
+<li><label><input type="radio" name="rdoPainting" value="thick outline">厚い輪郭</label></li>
+<li><label><input type="radio" name="rdoPainting" value="black outline">黒い輪郭</label></li>
+<li><label><input type="radio" name="rdoPainting" value="Drawing">線画</label></li>
+<li><label><input type="radio" name="rdoPainting" value="Illustration">イラスト</label></li>
+<li><label><input type="radio" name="rdoPainting" value="Landscape">風景画、風景</label></li>
+<li><label><input type="radio" name="rdoPainting" value="Background">背景</label></li>
+<li><label><input type="radio" name="rdoPainting" value="rough sketch on memo paper analog illust a pencil by side concept idea of anime girl anime girl pixiv">ラフ線画</label></li>
+<li><label><input type="radio" name="rdoPainting" value="Rough Drawing">ラフ線画</label></li>
+<li><label><input type="radio" name="rdoPainting" value="Anime Art">アニメ塗りイラスト</label></li>
+<li><label><input type="radio" name="rdoPainting" value="artstation, deviantart, concept art, digital painting, award-winning">コンセプトアート風</label></li>
+<li><label><input type="radio" name="rdoPainting" value="Ultra realistic illustration">超リアルなイラスト</label></li>
+<li><label><input type="radio" name="rdoPainting" value="colored pencil">色鉛筆</label></li>
+<li><label><input type="radio" name="rdoPainting" value="Oil paining">油絵</label></li>
+<li><label><input type="radio" name="rdoPainting" value="Portrait">肖像画</label></li>
+<li><label><input type="radio" name="rdoPainting" value="UKIYO">浮世絵</label></li>
+<li><label><input type="radio" name="rdoPainting" value="Indian ink painting/ink brush painting">水墨画</label></li>
+<li><label><input type="radio" name="rdoPainting" value="Granblue Fantasy">幻想的</label></li>
+<li><label><input type="radio" name="rdoPainting" value="a photo of">写真</label></li>
+<li><label><input type="radio" name="rdoPainting" value="pencil drawing,(monochrome:1.5)">モノクロ</label></li>
+<li><label><input type="radio" name="rdoPainting" value="sketch, one-hour drawing challenge">書きかけ</label></li>
+<li><label><input type="radio" name="rdoPainting" value="pastel color,sketch, one-hour drawing challenge">書きかけ(色付き)</label></li>
+<li><label><input type="radio" name="rdoPainting" value="1,beautiful girl,Character documentation,fullbody,{{three-sided view}},Profile, back, front,{{masterpiece}}, reference sheet, {{white background}}">三面図</label></li>
+<!--
+<li><label><input type="radio" name="rdoPainting" value=""></label></li>
+-->
+</ul>
+</fieldset>
+
+<fieldset>
+<legend>シチュエーション</legend>
+<fieldset>
+<legend>屋外</legend>
+<ul>
+<li><label><input type="radio" name="rdoSituation" value="" checked>設定なし</label></li>
+<li><label><input type="radio" name="rdoSituation" value="outdoors,rooftop">屋上</label></li>
+<li><label><input type="radio" name="rdoSituation" value="outdoors,school">学校</label></li>
+<li><label><input type="radio" name="rdoSituation" value="outdoors,beach">ビーチ</label></li>
+<li><label><input type="radio" name="rdoSituation" value="outdoors,pool">プール</label></li>
+<li><label><input type="radio" name="rdoSituation" value="outdoors,poolside">プールサイド</label></li>
+<li><label><input type="radio" name="rdoSituation" value="outdoors,park">公園</label></li>
+<li><label><input type="radio" name="rdoSituation" value="outdoors,train station">駅</label></li>
+<li><label><input type="radio" name="rdoSituation" value="outdoors,ferris wheel">観覧車</label></li>
+<li><label><input type="radio" name="rdoSituation" value="outdoors,bus stop">バス停</label></li>
+<li><label><input type="radio" name="rdoSituation" value="outdoors,cafe">カフェ</label></li>
+<li><label><input type="radio" name="rdoSituation" value="outdoors,onsen">温泉</label></li>
+<li><label><input type="radio" name="rdoSituation" value="outdoors,cityscape">街並み</label></li>
+<li><label><input type="radio" name="rdoSituation" value="outdoors,landscape">田舎の風景</label></li>
+<li><label><input type="radio" name="rdoSituation" value="outdoors,shore">海岸</label></li>
+<li><label><input type="radio" name="rdoSituation" value="outdoors,ocean">海岸</label></li>
+<li><label><input type="radio" name="rdoSituation" value="outdoors, Live performance venue">ライブ会場</label></li>
+<!--
+<li><label><input type="radio" name="rdoSituation" value="outdoors,"></label></li>
+-->
+</ul>
+</fieldset>
+<fieldset>
+<legend>屋内</legend>
+<ul>
+<li><label><input type="radio" name="rdoSituation" value="">設定なし</label></li>
+<li><label><input type="radio" name="rdoSituation" value="indoors,living room">リビング</label></li>
+<li><label><input type="radio" name="rdoSituation" value="indoors,bathroom">風呂</label></li>
+<li><label><input type="radio" name="rdoSituation" value="indoors,bathtub">バスタブ</label></li>
+<li><label><input type="radio" name="rdoSituation" value="indoors,shower">シャワー</label></li>
+<li><label><input type="radio" name="rdoSituation" value="indoors,bedroom">寝室</label></li>
+<li><label><input type="radio" name="rdoSituation" value="indoors,classroom">教室</label></li>
+<li><label><input type="radio" name="rdoSituation" value="indoors,locker room">ロッカールーム</label></li>
+<li><label><input type="radio" name="rdoSituation" value="indoors,kitchen">キッチン</label></li>
+<li><label><input type="radio" name="rdoSituation" value="indoors,library">図書室</label></li>
+<li><label><input type="radio" name="rdoSituation" value="indoors,cafe">カフェ</label></li>
+<li><label><input type="radio" name="rdoSituation" value="indoors,office">オフィス</label></li>
+<li><label><input type="radio" name="rdoSituation" value="indoors,on the bed">ベッドの上で</label></li>
+<li><label><input type="radio" name="rdoSituation" value="indoors,on the couch">ソファの上で</label></li>
+<li><label><input type="radio" name="rdoSituation" value="indoors,on the train">電車内で</label></li>
+<li><label><input type="radio" name="rdoSituation" value="floral background">背景が花に</label></li>
+<li><label><input type="radio" name="rdoSituation" value="indoors, clubhouse">ライブ会場</label></li>
+<li><label><input type="radio" name="rdoSituation" value="indoors, concert hall">コンサート会場</label></li>
+<!--
+<li><label><input type="radio" name="rdoSituation" value="indoors,"></label></li>
+-->
+</ul>
+</fieldset>
+</fieldset>
+
+<fieldset>
+<legend>年齢</legend>
+<ul>
+<li><label><input type="radio" name="rdoYears" value="" checked>設定なし</label></li>
+<li><label><input type="radio" name="rdoYears" value="a man is in his 20s">20代男性</label></li>
+<li><label><input type="radio" name="rdoYears" value="a woman in her 20s">20代女性</label></li>
+<li><label><input type="radio" name="rdoYears" value="a man is in his 30s">30代男性</label></li>
+<li><label><input type="radio" name="rdoYears" value="a woman in her 30s">30代女性</label></li>
+<li><label><input type="radio" name="rdoYears" value="a man is in his 40s">40代男性</label></li>
+<li><label><input type="radio" name="rdoYears" value="a woman in her 40s">40代女性</label></li>
+<li><label><input type="radio" name="rdoYears" value="a man is in his 50s">50代男性</label></li>
+<li><label><input type="radio" name="rdoYears" value="a woman in her 50s">50代女性</label></li>
+<li><label><input type="radio" name="rdoYears" value="a man is in his 60s">60代男性</label></li>
+<li><label><input type="radio" name="rdoYears" value="a woman in her 60s">60代女性</label></li>
+<li><label><input type="radio" name="rdoYears" value="a man is in his 70s">70代男性</label></li>
+<li><label><input type="radio" name="rdoYears" value="a woman in her 70s">70代女性</label></li>
+<li><label><input type="radio" name="rdoYears" value="a man is in his 80s">80代男性</label></li>
+<li><label><input type="radio" name="rdoYears" value="a woman in her 80s">80代女性</label></li>
+<li><label><input type="radio" name="rdoYears" value="a man is in his 90s">90代男性</label></li>
+<li><label><input type="radio" name="rdoYears" value="a woman in her 90s">90代女性</label></li>
+<li><label><input type="radio" name="rdoYears" value="boy">少年</label></li>
+<li><label><input type="radio" name="rdoYears" value="masculine gender">男性</label></li>
+<li><label><input type="radio" name="rdoYears" value="girl">少女</label></li>
+<li><label><input type="radio" name="rdoYears" value="woman">女性</label></li>
+<li><label><input type="radio" name="rdoYears" value="grandpa">おじいちゃん</label></li>
+<li><label><input type="radio" name="rdoYears" value="grandma">おばあちゃん</label></li>
+<!--
+<li><label><input type="radio" name="rdoYears" value=""></label></li>
+-->
+</ul>
+</fieldset>
+</fieldset>
+
+<fieldset>
+<legend>感情</legend>
+<ul>
+<li><label><input type="checkbox" name="chkEmotion" value="smile">笑顔</label></li>
+<li><label><input type="checkbox" name="chkEmotion" value="blush">頬染め</label></li>
+<li><label><input type="checkbox" name="chkEmotion" value="crying">泣く</label></li>
+<li><label><input type="checkbox" name="chkEmotion" value="sad">悲しみ</label></li>
+<li><label><input type="checkbox" name="chkEmotion" value="shy">羞恥A</label></li>
+<li><label><input type="checkbox" name="chkEmotion" value="embarrassed">羞恥B</label></li>
+<li><label><input type="checkbox" name="chkEmotion" value="expressionless">ジト目A</label></li>
+<li><label><input type="checkbox" name="chkEmotion" value="empty eyes">ジト目B</label></li>
+<li><label><input type="checkbox" name="chkEmotion" value="angry">怒り</label></li>
+<li><label><input type="checkbox" name="chkEmotion" value="scared">怯え</label></li>
+<li><label><input type="checkbox" name="chkEmotion" value="crazy smile">狂気の笑顔</label></li>
+<li><label><input type="checkbox" name="chkEmotion" value="evil smile">小悪魔スマイル</label></li>
+<li><label><input type="checkbox" name="chkEmotion" value="fingersmile">ゆびでスマイルポーズ</label></li>
+<li><label><input type="checkbox" name="chkEmotion" value="embarrassed">恥ずかしそうな表情</label></li>
+<!--
+<li><label><input type="checkbox" name="chkEmotion" value=""></label></li>
+-->
+</ul>
+</fieldset>
+
+<fieldset>
+<legend>頭</legend>
+
+
+<fieldset>
+<legend>目</legend>
+<ul>
+<li><label><input type="radio" name="rdoEyes" value="" checked>設定なし</label></li>
+<li><label><input type="radio" name="rdoEyes" value="single-edged eye">一重</label></li>
+<li><label><input type="radio" name="rdoEyes" value="double eyelid">二重</label></li>
+<li><label><input type="radio" name="rdoEyes" value="crossed eyes">奥二重</label></li>
+<li><label><input type="radio" name="rdoEyes" value="slant or almond-shaped eyes">つり目</label></li>
+<li><label><input type="radio" name="rdoEyes" value="drooping eyes">たれ目</label></li>
+<li><label><input type="radio" name="rdoEyes" value="slant or almond-shaped eyes">つり目</label></li>
+<li><label><input type="radio" name="rdoEyes" value="cat's-eye">猫目</label></li>
+<!--
+<li><label><input type="radio" name="rdoEyes" value=""></label></li>
+-->
+</ul>
+</fieldset>
+
+<fieldset>
+<legend>目のオプション</legend>
+<ul>
+<li><label><input type="checkbox" name="chkEyesOptions" value="largish eyes">大きい目</label></li>
+<li><label><input type="checkbox" name="chkEyesOptions" value="small eyes">小さい目</label></li>
+<li><label><input type="checkbox" name="chkEyesOptions" value="sleepy eyes">眠り目</label></li>
+<li><label><input type="checkbox" name="chkEyesOptions" value="light brown eyes">茶色</label></li>
+<li><label><input type="checkbox" name="chkEyesOptions" value="blue eyes">青</label></li>
+<li><label><input type="checkbox" name="chkEyesOptions" value="red eyes">赤</label></li>
+<li><label><input type="checkbox" name="chkEyesOptions" value="green eyes">緑</label></li>
+<!--
+<li><label><input type="checkbox" name="chkEyesOptions" value=""></label></li>
+-->
+</ul>
+</fieldset>
+
+<fieldset>
+<legend>髪型(前髪)</legend>
+<ul>
+<li><label><input type="radio" name="rdoBangs" value="" checked>設定なし</label></li>
+<li><label><input type="radio" name="rdoBangs" value="hair over one eye">片目隠れ</label></li>
+<li><label><input type="radio" name="rdoBangs" value="hair over eyes ">メカクレ</label></li>
+<li><label><input type="radio" name="rdoBangs" value="blunt bangs">ぱっつん</label></li>
+<li><label><input type="radio" name="rdoBangs" value="parted bangs">センター分け</label></li>
+<li><label><input type="radio" name="rdoBangs" value="swept bangs">片方分け</label></li>
+<li><label><input type="radio" name="rdoBangs" value="crossed bangs">目のところでばってんの毛</label></li>
+<li><label><input type="radio" name="rdoBangs" value="hair intakes">エアインテーク</label></li>
+<li><label><input type="radio" name="rdoBangs" value="hime_cut">姫カット</label></li>
+<!--
+<li><label><input type="radio" name="rdoBangs" value=""></label></li>
+-->
+</ul>
+</fieldset>
+
+<fieldset>
+<legend>髪型</legend>
+<ul>
+<li><label><input type="radio" name="rdoHair" value="" checked>設定なし</label></li>
+<li><label><input type="radio" name="rdoHair" value="long hair">ロングヘア</label></li>
+<li><label><input type="radio" name="rdoHair" value="short hair">ショートヘア</label></li>
+<li><label><input type="radio" name="rdoHair" value="medium hair">セミロング</label></li>
+<li><label><input type="radio" name="rdoHair" value="twintails">ツインテール</label></li>
+<li><label><input type="radio" name="rdoHair" value="bob cut">ボブ</label></li>
+<li><label><input type="radio" name="rdoHair" value="straight hair">ストレートヘアー</label></li>
+<li><label><input type="radio" name="rdoHair" value="hime_cut">姫カット</label></li>
+<!--
+<li><label><input type="radio" name="rdoHair" value=""></label></li>
+-->
+</ul>
+</fieldset>
+
+<fieldset>
+<legend>髪型オプション</legend>
+<ul>
+<li><label><input type="checkbox" name="chkHairOption" value="ponytail">ポニーテール</label></li>
+<li><label><input type="checkbox" name="chkHairOption" value="side ponytail">サイドテール</label></li>
+<li><label><input type="checkbox" name="chkHairOption" value="two side up">ツーサイドアップ</label></li>
+<li><label><input type="checkbox" name="chkHairOption" value="ahoge">アホ毛</label></li>
+<li><label><input type="checkbox" name="chkHairOption" value="messy hair">くせっ毛（モジャ）</label></li>
+<li><label><input type="checkbox" name="chkHairOption" value="braid">三つ編み</label></li>
+<li><label><input type="checkbox" name="chkHairOption" value="hair between eyes">目の間の髪</label></li>
+<li><label><input type="checkbox" name="chkHairOption" value="french braid">フランスの三つ編み</label></li>
+<li><label><input type="checkbox" name="chkHairOption" value="hair bun">おだんごヘア</label></li>
+<li><label><input type="checkbox" name="chkHairOption" value="wavy hair">ウェーブヘア</label></li>
+<li><label><input type="checkbox" name="chkHairOption" value="low-tied long hair">後ろで縛っている長髪</label></li>
+<li><label><input type="checkbox" name="chkHairOption" value="shiny hair">艶のある髪</label></li>
+<li><label><input type="checkbox" name="chkHairOption" value="wavy hair">ウェーブがかった髪</label></li>
+<li><label><input type="checkbox" name="chkHairOption" value="drill hair / twin drills">リルヘアー</label></li>
+<li><label><input type="checkbox" name="chkHairOption" value="twintails">ツインテール</label></li>
+<li><label><input type="checkbox" name="chkHairOption" value="hair intakes">エアインテーク</label></li>
+<li><label><input type="checkbox" name="chkHairOption" value="curly_hair">カール</label></li>
+<!--
+<li><label><input type="checkbox" name="chkHairOption" value=""></label></li>
+-->
+</ul>
+</fieldset>
+
+<fieldset>
+<legend>髪色</legend>
+<ul>
+<li><label><input type="radio" name="rdoHairColor" value="" checked>設定なし</label></li>
+<li><label><input type="radio" name="rdoHairColor" value="black hair">黒髪</label></li>
+<li><label><input type="radio" name="rdoHairColor" value="brown hair">茶髪</label></li>
+<li><label><input type="radio" name="rdoHairColor" value="pink hair">ピンク髪</label></li>
+<li><label><input type="radio" name="rdoHairColor" value="blonde hair">金髪</label></li>
+<li><label><input type="radio" name="rdoHairColor" value="silver hair">銀髪</label></li>
+<li><label><input type="radio" name="rdoHairColor" value="two-tone hair">ツートン</label></li>
+<li><label><input type="radio" name="rdoHairColor" value="gradient hair">グラデーション</label></li>
+<!--
+<li><label><input type="radio" name="rdoHairColor" value=""></label></li>
+-->
+</ul>
+</fieldset>
+</fieldset>
+
+<fieldset>
+<legend>服装</legend>
+<fieldset>
+<ul>
+<li><label><input type="radio" name="rdoClothing" value="" checked>設定なし</label></li>
+<li><label><input type="radio" name="rdoClothing" value="wearing a t-shirt">Tシャツ</label></li>
+<li><label><input type="radio" name="rdoClothing" value="wearing a dress">ドレス・ワンピース</label></li>
+<li><label><input type="radio" name="rdoClothing" value="wearing a frilled shirt">フリル付きの服</label></li>
+<li><label><input type="radio" name="rdoClothing" value="wearing a long sleeves">長袖</label></li>
+<li><label><input type="radio" name="rdoClothing" value="wearing a coat">コート</label></li>
+<li><label><input type="radio" name="rdoClothing" value="wearing a leotard">レオタード</label></li>
+<li><label><input type="radio" name="rdoClothing" value="wearing a kimono">着物</label></li>
+<li><label><input type="radio" name="rdoClothing" value="wearing a swimsuit">水着</label></li>
+<li><label><input type="radio" name="rdoClothing" value="wearing a bikini">ビキニ</label></li>
+<li><label><input type="radio" name="rdoClothing" value="wearing a school uniform">制服</label></li>
+<li><label><input type="radio" name="rdoClothing" value="wearing a Seifuku">学校制服</label></li>
+<li><label><input type="radio" name="rdoClothing" value="wearing a Track Briefs">ブルマ</label></li>
+<li><label><input type="radio" name="rdoClothing" value="wearing a Competition Swimsuit">競泳水着</label></li>
+<li><label><input type="radio" name="rdoClothing" value="Zettai Ryouiki">絶対領域</label></li>
+<li><label><input type="radio" name="rdoClothing" value="wearing a blouse">ブラウス</label></li>
+<li><label><input type="radio" name="rdoClothing" value="wearing a school uniform">制服</label></li>
+<li><label><input type="radio" name="rdoClothing" value="wearing a serafuku">セーラー服</label></li>
+<li><label><input type="radio" name="rdoClothing" value="wearing a suit">スーツ</label></li>
+<li><label><input type="radio" name="rdoClothing" value="wearing a leotard">レオタード</label></li>
+<li><label><input type="radio" name="rdoClothing" value="wearing a chinese clothes">チャイナ服</label></li>
+<li><label><input type="radio" name="rdoClothing" value="wearing a pajamas">パジャマ</label></li>
+<li><label><input type="radio" name="rdoClothing" value="wearing a maid,wearing a maid apron">メイド服</label></li>
+<li><label><input type="radio" name="rdoClothing" value="wearing a blazer">ブレザー</label></li>
+<li><label><input type="radio" name="rdoClothing" value="wearing a school swimsuit">スク水</label></li>
+<li><label><input type="radio" name="rdoClothing" value="wearing a cheerleader">チアガール</label></li>
+<li><label><input type="radio" name="rdoClothing" value="wearing a pencil Skirt">スーツ</label></li>
+<li><label><input type="radio" name="rdoClothing" value="wearing a Idol Costumes">アイドル衣装</label></li>
+<li><label><input type="radio" name="rdoClothing" value="wearing a bunny girl">バニーガール</label></li>
+<li><label><input type="radio" name="rdoClothing" value="wearing a nurse">ナース服</label></li>
+<li><label><input type="radio" name="rdoClothing" value="wearing a gothic_lolita">ゴスロリ</label></li>
+<li><label><input type="radio" name="rdoClothing" value="wearing a santa">サンタ服</label></li>
+<li><label><input type="radio" name="rdoClothing" value="wearing a sweet_lolita">甘ロリ</label></li>
+<li><label><input type="radio" name="rdoClothing" value="wearing a frock">スモック</label></li>
+<li><label><input type="radio" name="rdoClothing" value="wearing a sexy lingerie">セクシーランジェリー</label></li>
+<!--
+<li><label><input type="radio" name="rdoClothing" value=""></label></li>
+-->
+</ul>
+</fieldset>
+
+<fieldset>
+<legend>靴</legend>
+<ul>
+<li><label><input type="radio" name="rdoShoes" value="" checked>設定なし</label></li>
+<li><label><input type="radio" name="rdoShoes" value="wearing boots">ブーツ</label></li>
+<li><label><input type="radio" name="rdoShoes" value="wearing knee boots">ロングブーツ</label></li>
+<li><label><input type="radio" name="rdoShoes" value="wearing sneaker">スニーカー</label></li>
+<li><label><input type="radio" name="rdoShoes" value="wearing high-heeled shoes">ハイヒール</label></li>
+<li><label><input type="radio" name="rdoShoes" value="wearing sandal">サンダル</label></li>
+<li><label><input type="radio" name="rdoShoes" value="wearing pumps">パンプス</label></li>
+<li><label><input type="radio" name="rdoShoes" value="wearing stiletto">ピン・ヒール</label></li>
+<li><label><input type="radio" name="rdoShoes" value="wearing Rockin' Horse Shoes">ロッキンホース・シューズ</label></li>
+<li><label><input type="radio" name="rdoShoes" value="wearing penny loafers">ローファー</label></li>
+<!--
+<li><label><input type="radio" name="rdoShoes" value=""></label></li>
+-->
+</ul>
+</fieldset>
+
+<fieldset>
+<legend>オプション</legend>
+<ul>
+<li><label><input type="checkbox" name="chkClothingOption" value="wearing a hat">帽子</label></li>
+<li><label><input type="checkbox" name="chkClothingOption" value="wearing a mask">マスク</label></li>
+<li><label><input type="checkbox" name="chkClothingOption" value="wearing a gloves">手袋</label></li>
+<li><label><input type="checkbox" name="chkClothingOption" value="wearing a choker">チョーカー</label></li>
+<li><label><input type="checkbox" name="chkClothingOption" value="wearing a ribbon">リボン</label></li>
+<li><label><input type="checkbox" name="chkClothingOption" value="wearing a covering eyes">目隠し</label></li>
+<li><label><input type="checkbox" name="chkClothingOption" value="wearing a hair bow">ヘアリボン</label></li>
+<li><label><input type="checkbox" name="chkClothingOption" value="wearing a Thigh Highs Stockings">ニーハイソックス</label></li>
+<li><label><input type="checkbox" name="chkClothingOption" value="wearing a garter belt">ガターベルト</label></li>
+<li><label><input type="checkbox" name="chkClothingOption" value="wearing a garter straps">ガターストラップ</label></li>
+<li><label><input type="checkbox" name="chkClothingOption" value="wearing a pantyhose">パンスト</label></li>
+<li><label><input type="checkbox" name="chkClothingOption" value="wearing a chain">鎖</label></li>
+<li><label><input type="checkbox" name="chkClothingOption" value="wearing a maid_headdress">メイド用の髪飾り</label></li>
+<li><label><input type="checkbox" name="chkClothingOption" value="wearing a hairband">ヘアバンド</label></li>
+<li><label><input type="checkbox" name="chkClothingOption" value="Hold the microphone in your hand">手にマイク</label></li>
+<li><label><input type="checkbox" name="chkClothingOption" value="wearing a black tights">黒タイツ</label></li>
+<li><label><input type="checkbox" name="chkClothingOption" value="wearing a thighhighs">ニーソ</label></li>
+<li><label><input type="checkbox" name="chkClothingOption" value="wearing a skirt">スカート</label></li>
+<li><label><input type="checkbox" name="chkClothingOption" value="wearing a miniskirt">ミニスカート</label></li>
+<li><label><input type="checkbox" name="chkClothingOption" value="wearing a bike shorts">スパッツ</label></li>
+<li><label><input type="checkbox" name="chkClothingOption" value="full thighhighs">太もも</label></li>
+<li><label><input type="checkbox" name="chkClothingOption" value="wearing glasses">メガネ</label></li>
+<!--
+<li><label><input type="checkbox" name="chkClothingOption" value=""></label></li>
+-->
+</ul>
+</fieldset>
+</fieldset>
+
+<fieldset>
+<legend>胸囲</legend>
+<ul>
+<li><label><input type="radio" name="rdoBust" value="" checked>設定なし</label></li>
+<li><label><input type="radio" name="rdoBust" value="flat chest">無乳</label></li>
+<li><label><input type="radio" name="rdoBust" value="small breasts">小さな胸</label></li>
+<li><label><input type="radio" name="rdoBust" value="large breasts">巨乳</label></li>
+<li><label><input type="radio" name="rdoBust" value="huge breasts">爆乳</label></li>
+<!--
+<li><label><input type="radio" name="rdoBust" value=""></label></li>
+-->
+</ul>
+</fieldset>
+
+<fieldset>
+<legend>身体的特徴</legend>
+<ul>
+<li><label><input type="checkbox" name="chkCharacteristics" value="mole">ほくろ</label></li>
+<li><label><input type="checkbox" name="chkCharacteristics" value="mole under eye">泣きぼくろ</label></li>
+<li><label><input type="checkbox" name="chkCharacteristics" value="dark skin">褐色</label></li>
+<li><label><input type="checkbox" name="chkCharacteristics" value="cat ears">猫耳</label></li>
+<li><label><input type="checkbox" name="chkCharacteristics" value="fox ears">狐耳</label></li>
+<li><label><input type="checkbox" name="chkCharacteristics" value="elf ears">エルフ耳</label></li>
+<li><label><input type="checkbox" name="chkCharacteristics" value="rabbit ears">うさ耳</label></li>
+<li><label><input type="checkbox" name="chkCharacteristics" value="cat tail">猫しっぽ</label></li>
+<li><label><input type="checkbox" name="chkCharacteristics" value="fake animal ears">つけ耳（ウサギ耳等）</label></li>
+<li><label><input type="checkbox" name="chkCharacteristics" value="tomboy">ボーイッシュ</label></li>
+<!--
+<li><label><input type="checkbox" name="chkCharacteristics" value=""></label></li>
+-->
+</ul>
+</fieldset>
+
+<fieldset>
+<legend>ポーズ</legend>
+<fieldset>
+<ul>
+<li><label><input type="radio" name="rdoPose" value="" checked>設定なし</label></li>
+<li><label><input type="radio" name="rdoPose" value="lying">寝そべり</label></li>
+<li><label><input type="radio" name="rdoPose" value="on back">仰向け</label></li>
+<li><label><input type="radio" name="rdoPose" value="on stomach">うつ伏せ</label></li>
+<li><label><input type="radio" name="rdoPose" value="all fours">四つん這い</label></li>
+<li><label><input type="radio" name="rdoPose" value="standing">立ち姿</label></li>
+<li><label><input type="radio" name="rdoPose" value="running">走っている姿</label></li>
+<li><label><input type="radio" name="rdoPose" value="sitting">座っている</label></li>
+<li><label><input type="radio" name="rdoPose" value="spread legs">開脚</label></li>
+<li><label><input type="radio" name="rdoPose" value="kneeling">膝立ち</label></li>
+<li><label><input type="radio" name="rdoPose" value="crossed legs">足組み</label></li>
+<li><label><input type="radio" name="rdoPose" value="hugging own legs">体育座り</label></li>
+<li><label><input type="radio" name="rdoPose" value="seiza">正座</label></li>
+<li><label><input type="radio" name="rdoPose" value="knees together feet apart">足を閉じる</label></li>
+<li><label><input type="radio" name="rdoPose" value="wariza">女の子座り</label></li>
+<li><label><input type="radio" name="rdoPose" value="1girl">女性が一人</label></li>
+<li><label><input type="radio" name="rdoPose" value="yuri">百合</label></li>
+<li><label><input type="radio" name="rdoPose" value="full body">全身</label></li>
+<li><label><input type="radio" name="rdoPose" value="upper body">上半身がメイン</label></li>
+<li><label><input type="radio" name="rdoPose" value="from side">横から</label></li>
+<li><label><input type="radio" name="rdoPose" value="from above">頭上から</label></li>
+<li><label><input type="radio" name="rdoPose" value="from behind">背中越し</label></li>
+<li><label><input type="radio" name="rdoPose" value="from below">足元から</label></li>
+<li><label><input type="radio" name="rdoPose" value="waving at viewer">手を振る</label></li>
+<li><label><input type="radio" name="rdoPose" value="facing at viewer">顔を向ける</label></li>
+<li><label><input type="radio" name="rdoPose" value="point at viewer">こちらに指をさす</label></li>
+<li><label><input type="radio" name="rdoPose" value="finger to mouth">人差し指を口に</label></li>
+<li><label><input type="radio" name="rdoPose" value="claw pose">爪を立てる</label></li>
+<li><label><input type="radio" name="rdoPose" value="curtsey">英国風あいさつ</label></li>
+<!--
+<li><label><input type="radio" name="rdoPose" value=""></label></li>
+-->
+</ul>
+</fieldset>
+<fieldset>
+<legend>オプション</legend>
+<ul>
+<li><label><input type="checkbox" name="chkPoseOption" value="closed mouth">閉口</label></li>
+<li><label><input type="checkbox" name="chkPoseOption" value="tongue out">舌出し</label></li>
+<li><label><input type="checkbox" name="chkPoseOption" value="double v">ダブルピース</label></li>
+<li><label><input type="checkbox" name="chkPoseOption" value="hand between legs">手を足にかける</label></li>
+<!--
+<li><label><input type="checkbox" name="chkPoseOption" value=""></label></li>
+-->
+</ul>
+</fieldset>
+</fieldset>
+
+<fieldset>
+<legend>カメラワーク</legend>
+
+<fieldset>
+<legend>機種</legend>
+<ul>
+<li><label><input type="radio" name="rdoCameraModel" value="" checked>設定なし</label></li>
+<li><label><input type="radio" name="rdoCameraModel" value="Canon EOS 5D">Canon EOS 5D</label></li>
+<li><label><input type="radio" name="rdoCameraModel" value="Nikon D750">Nikon D750</label></li>
+<li><label><input type="radio" name="rdoCameraModel" value="Sony α7">Sony α7</label></li>
+<!--
+<li><label><input type="radio" name="rdoCameraModel" value=""></label></li>
+-->
+</ul>
+</fieldset>
+
+<fieldset>
+<legend>焦点距離</legend>
+<ul>
+<li><label><input type="radio" name="rdoCameraFocalLength" value="" checked>設定なし</label></li>
+<li><label><input type="radio" name="rdoCameraFocalLength" value="24mm">24mm : 風景を広範囲に撮ったり、寄って撮影するとき</label></li>
+<li><label><input type="radio" name="rdoCameraFocalLength" value="35mm">35mm : iPhoneのカメラ距離</label></li>
+<li><label><input type="radio" name="rdoCameraFocalLength" value="50mm">50mm : かつての標準距離</label></li>
+<li><label><input type="radio" name="rdoCameraFocalLength" value="80mm">80mm : ボケを深くして背景をグッと圧縮したいときの距離</label></li>
+<li><label><input type="radio" name="rdoCameraFocalLength" value="85mm">85mm : 基本はこれ</label></li>
+<li><label><input type="radio" name="rdoCameraFocalLength" value="105mm">105mm : マクロ撮影（小さいものを拡大して撮影）するとき</label></li>
+<li><label><input type="radio" name="rdoCameraFocalLength" value="300mm">300mm : 遠くにあるものを撮るとき</label></li>
+<!--
+<li><label><input type="radio" name="rdoCameraFocalLength" value="mm">mm : </label></li>
+-->
+</ul>
+</fieldset>
+
+<fieldset>
+<legend>F値</legend>
+<ul>
+<li><label><input type="radio" name="rdoCameraFnumber" value="" checked>設定なし</label></li>
+<li><label><input type="radio" name="rdoCameraFnumber" value="F/1.4">F/1.4 : 一番良く使うF値</label></li>
+<li><label><input type="radio" name="rdoCameraFnumber" value="F/1.8">F/1.8 : ボケ味深め、高級レンズが多い</label></li>
+<li><label><input type="radio" name="rdoCameraFnumber" value="F/2.8">F/2.8 : 焦点距離300 mmのとき</label></li>
+<li><label><input type="radio" name="rdoCameraFnumber" value="F/4">F/4 : ズームレンズでよくある</label></li>
+<li><label><input type="radio" name="rdoCameraFnumber" value="F/5.6">F/5.6 : マクロ撮影（小さいものを拡大して撮影）のとき</label></li>
+<li><label><input type="radio" name="rdoCameraFnumber" value="F/8">F/8 : クッキリ見せたい</label></li>
+<li><label><input type="radio" name="rdoCameraFnumber" value="F/22">F/22 : 風景など、光が多い場所で全体にピンを合わせたい</label></li>
+<!--
+<li><label><input type="radio" name="rdoCameraFnumber" value="F/">F/ : </label></li>
+-->
+</ul>
+</fieldset>
+
+<fieldset>
+<legend>アングル</legend>
+<ul>
+<li><label><input type="radio" name="rdoAngle" value="" checked>設定なし</label></li>
+<li><label><input type="radio" name="rdoAngle" value="from side">横から</label></li>
+<li><label><input type="radio" name="rdoAngle" value="from above">上から</label></li>
+<li><label><input type="radio" name="rdoAngle" value="from behind">後ろから</label></li>
+<li><label><input type="radio" name="rdoAngle" value="from below">下から</label></li>
+<li><label><input type="radio" name="rdoAngle" value="fisheye">魚眼</label></li>
+<li><label><input type="radio" name="rdoAngle" value="panorama">パノラマ</label></li>
+<li><label><input type="radio" name="rdoAngle" value="Low Angle">下から見上げる</label></li>
+<li><label><input type="radio" name="rdoAngle" value="Overhead View">頭の上からの見下ろし</label></li>
+<li><label><input type="radio" name="rdoAngle" value="Aerial View">空からの見下ろしアングル</label></li>
+<li><label><input type="radio" name="rdoAngle" value="Long Shot">遠くから写して</label></li>
+<li><label><input type="radio" name="rdoAngle" value="Waist Up Shot">腰から上を写して</label></li>
+<li><label><input type="radio" name="rdoAngle" value="Bust Up Shot">胸より上を写して</label></li>
+<li><label><input type="radio" name="rdoAngle" value="Close Up Shot">近づいて写して</label></li>
+<li><label><input type="radio" name="rdoAngle" value="Bokeh">被写体以外をぼかして</label></li>
+<li><label><input type="radio" name="rdoAngle" value="looking at viewer">カメラ目線</label></li>
+<li><label><input type="radio" name="rdoAngle" value="looking down at viewer">カメラを見下ろす構図</label></li>
+<li><label><input type="radio" name="rdoAngle" value="eye contact">キャラ同士で見つめ合う</label></li>
+<li><label><input type="radio" name="rdoAngle" value="looking afar">遠くを見つめている</label></li>
+<li><label><input type="radio" name="rdoAngle" value="looking away">向こうを見ている</label></li>
+<li><label><input type="radio" name="rdoAngle" value="looking at another">目をそらしている</label></li>
+<li><label><input type="radio" name="rdoAngle" value="looking at breasts">胸を見ている</label></li>
+<li><label><input type="radio" name="rdoAngle" value="looking over eyewear">メガネをずらして見る仕草</label></li>
+<!--
+<li><label><input type="radio" name="rdoAngle" value=""></label></li>
+-->
+</ul>
+</fieldset>
+
+<fieldset>
+<legend>露光</legend>
+<ul>
+<li><label><input type="radio" name="rdoLighting" value="" checked>設定なし</label></li>
+<li><label><input type="radio" name="rdoLighting" value="strong light">強い光</label></li>
+<li><label><input type="radio" name="rdoLighting" value="strong light coming in">強い光が被写体に差し込む</label></li>
+<li><label><input type="radio" name="rdoLighting" value="light rays">光線が差す</label></li>
+<li><label><input type="radio" name="rdoLighting" value="backlighting">逆光</label></li>
+<li><label><input type="radio" name="rdoLighting" value="spot light">スポットライトが当たる</label></li>
+<li><label><input type="radio" name="rdoLighting" value="faint light">光が弱くなる</label></li>
+<li><label><input type="radio" name="rdoLighting" value="light particles">星空のように光が散りばめられる</label></li>
+<li><label><input type="radio" name="rdoLighting" value="light sparkles">光が瞬く</label></li>
+<li><label><input type="radio" name="rdoLighting" value="lens flare">レンズフレアが足される</label></li>
+<li><label><input type="radio" name="rdoLighting" value="light leaks">木漏れ日</label></li>
+<li><label><input type="radio" name="rdoLighting" value="sharp focus">焦点がはっきりする</label></li>
+<li><label><input type="radio" name="rdoLighting" value="blurry background">背景ぼけ</label></li>
+<!--
+<li><label><input type="radio" name="rdoLighting" value=""></label></li>
+-->
+</ul>
+</fieldset>
+</fieldset>
+
+<fieldset>
+<legend>オススメな言葉</legend>
+<ul>
+<li><label><input type="checkbox" name="chkRecommendation" value="Digital Illustration Anime">アニメ調デジタルイラスト</label></li>
+<li><label><input type="checkbox" name="chkRecommendation" value="Aesthetic Anime Eyes">芸術的なアニメ目</label></li>
+<li><label><input type="checkbox" name="chkRecommendation" value="Beautiful Anime Face">綺麗なアニメ顔</label></li>
+<li><label><input type="checkbox" name="chkRecommendation" value="kawaii face">美少女</label></li>
+<li><label><input type="checkbox" name="chkRecommendation" value="Detailed Painting Landscape">詳細な風景画</label></li>
+<li><label><input type="checkbox" name="chkRecommendation" value="Chibi,Nendoroid,Bobblehead,Gochiusa Face,~Painting系">デフォルメ</label></li>
+<li><label><input type="checkbox" name="chkRecommendation" value="best quality">高品質</label></li>
+<li><label><input type="checkbox" name="chkRecommendation" value="kawaii">かわいい</label></li>
+<li><label><input type="checkbox" name="chkRecommendation" value="stylish">かっこいい</label></li>
+<li><label><input type="checkbox" name="chkRecommendation" value="sketch,one-hour drawing challenge,saitou naoki">途中経過</label></li>
+<li><label><input type="checkbox" name="chkRecommendation" value="Full Body Shot">全身</label></li>
+<li><label><input type="checkbox" name="chkRecommendation" value="upper body">上半身がメイン</label></li>
+<li><label><input type="checkbox" name="chkRecommendation" value="Masterpiece extremely detailed CG unity 8k wallpaper" checked>高画質</label></li>
+<li><label><input type="checkbox" name="chkRecommendation" value="seductive">魅惑的</label></li>
+<!--
+<li><label><input type="checkbox" name="chkRecommendation" value=""></label></li>
+-->
+</ul>
+</fieldset>
+<input type="hidden" id="txtp1-2" value="kawaii,Masterpiece extremely detailed CG unity 8k wallpaper,lens flare,Aesthetic Anime Eyes,Beautiful Anime Face +表情">
+</form>
+
+</div>
+
+<p>相殺呪文(↓描いて欲しくないものを英語で記述)<br>
+<textarea id="txtp2" rows="3" style="width:98%;">longbody,lowres,watermark,bad anatomy,bad hands,missing fingers,pubic hair,extra digit,fewer digits,cropped,worst quality,low quality</textarea></p>
+
+<a href="javascript:void(0)" class="btnred red" onclick="doSaveServer('img2img');" style="width:200px;margin-bottom:20px;text-decoration: none;" data-label="AIお絵かき">AIお絵かき</a>
+<a href="javascript:void(0)" class="btnred red" onclick="doSaveServer('txt2img');" style="width:200px;margin-bottom:20px;text-decoration: none;" data-label="AIお絵かき(呪文だけ)">AIお絵かき(呪文だけ)</a>
+<a href="javascript:void(0)" class="btn" onclick="document.frmMain.reset();" style="width:200px;margin-bottom:20px;">追加呪文のリセット</a>
+
+<fieldset id="system_message" style="margin-bottom: 20px;">
+<legend>システムメッセージ</legend>
+<div id="progress"></div>
+</fieldset>
+</div>
+
+<fieldset id="set_image" hidden>
+<legend>AIサーバへ送信した画像</legend>
+<img id="imgTarget">
+</fieldset>
+
+<div id="get_image" hidden>
+<fieldset id="" style="margin-bottom: 20px;">
+<legend>AIが生成した画像</legend>
+<img id="imgAiResult">
+</fieldset>
+
+<a href="javascript:void(0)" class="btn" onclick="$('html,body').scrollTop(0);" style="width:200px;margin-bottom:20px;">ページトップに戻る</a>
+<a href="javascript:void(0)" class="btn" onclick="$('html,body').scrollTop($('#add_prompt').offset().top);" style="width:200px;margin-bottom:20px;">追加呪文に戻る</a>
+
+</div>
+
+<script>
+const sd_host = "http://localhost:7860";
+document.documentElement.addEventListener('touchstart', function (e) {
+	if (e.touches.length >= 2) {e.preventDefault();}
+}, {passive: false});
+
+var ox1=0,oy1=0,x1=0,y1=0;
+var mf1=false;
+var can1,ct1;
+
+var ox2=0,oy2=0,x2=0,y2=0;
+var mf2=false;
+var can2,ct2;
+
+var cntStroke=0;
+
+//カラー設定用変数（デフォルトは黒）
+var strStrokeStyle="#000000";
+
+//線の太さ用変数（デフォルトは1px）
+var strLineWidth="1";
+
+// ストレージの初期化
+var myStorage = localStorage;
+
+function initLocalStorage(){
+	myStorage.clear();
+	myStorage.setItem("__layer1", JSON.stringify([new String('')]));
+	myStorage.setItem("__layer2", JSON.stringify([new String('')]));
+}
+
+function setLocalStoreage(){
+	try {
+		var png = $("#canvas1")[0].toDataURL();
+		var logs = JSON.parse(myStorage.getItem("__layer1"));
+		setTimeout(function(){
+			logs.unshift({png});
+			if (logs.length > 11){
+				if (cntStroke % 150 == 0){
+					myStorage.removeItem("__layer1");
+				}
+				logs.pop();
+			}
+			myStorage.setItem("__layer1", JSON.stringify(logs));
+		}, 0);
+		var png2 = $("#canvas2")[0].toDataURL();
+		var logs2 = JSON.parse(myStorage.getItem("__layer2"));
+		setTimeout(function(){
+			logs2.unshift({png2});
+			if (logs2.length > 11){
+				if (cntStroke % 150 == 0){
+					myStorage.removeItem("__layer2");
+				}
+				logs2.pop();
+			}
+			myStorage.setItem("__layer2", JSON.stringify(logs2));
+		}, 0);
+		cntStroke++;
+	} catch(e) {
+		console.log(e.message);
+	}
+}
+
+function doPrevCanvas(){
+	try {
+		var logs = JSON.parse(myStorage.getItem("__layer1"));
+		if(logs.length > 1){
+			logs.shift();
+			setTimeout(function(){
+				myStorage.setItem("__layer1", JSON.stringify(logs));
+				ct1.clearRect(0, 0, $("#canvas1").width(), $("#canvas1").height());
+				if (logs.length == 0) {
+					draw("canvas1",logs["png"]);
+				} else {
+					draw("canvas1",logs[0]["png"]);
+				}
+			}, 0);
+		}
+		var logs2 = JSON.parse(myStorage.getItem("__layer2"));
+		if(logs2.length > 1){
+			logs2.shift();
+			setTimeout(function(){
+				myStorage.setItem("__layer2", JSON.stringify(logs2));
+				ct2.clearRect(0, 0, $("#canvas2").width(), $("#canvas2").height());
+				if (logs2.length == 0) {
+					draw("canvas2",logs2["png2"]);
+				} else {
+					draw("canvas2",logs2[0]["png2"]);
+				}
+			}, 0);
+		}
+	} catch(e) {
+		alert(e.message);
+	}
+}
+
+function draw(target,src) {
+	var img = new Image();
+	img.src = src;
+	img.onload = function() {
+		if (target == "canvas1"){
+			ct1.drawImage(img, 0, 0);
+		} else {
+			ct2.drawImage(img, 0, 0);
+		}
+	}
+}
+
+function doClear(){
+	if(confirm('最初から書き直します。よろしいですか？')){
+		ct1.clearRect(0, 0, $("#canvas1").width(), $("#canvas1").height());
+		ct2.clearRect(0, 0, $("#canvas2").width(), $("#canvas2").height());
+		mam_draw_init();
+	}
+}
+
+var blReflect = true;
+function doReflect(){
+	if (blReflect){
+		$("#canvas1,#canvas2").css('transform', 'scale(-1, 1)');
+		blReflect = false;
+	} else {
+		$("#canvas1,#canvas2").css('transform', 'scale(1, 1)');
+		blReflect = true;
+	}
+}
+
+var blFullscreen = true;
+function doFullscreen(){
+	var elem = document.getElementById("screen");
+	if (blFullscreen){
+		if (elem.requestFullscreen) {
+		  elem.requestFullscreen();
+		} else if (elem.webkitRequestFullScreen) {
+		  elem.webkitRequestFullScreen();
+		} else if (elem.mozRequestFullScreen) {
+		  elem.mozRequestFullScreen();
+		} else if (elem.msRequestFullscreen) {
+		  elem.msRequestFullscreen();
+		}
+		blFullscreen = false;
+	} else {
+		if (document.webkitCancelFullScreen) {
+			document.webkitCancelFullScreen();
+		} else if (document.mozCancelFullScreen) {
+			document.mozCancelFullScreen();
+		} else if (document.msExitFullscreen) {
+			document.msExitFullscreen();
+		} else if(document.cancelFullScreen) {
+			document.cancelFullScreen();
+		} else if(document.exitFullscreen) {
+			document.exitFullscreen();
+		}
+		blFullscreen = true;
+	}
+}
+
+function LineWidth(obj){
+	document.getElementById('LineWidthValue').value=obj.value;
+	strLineWidth=obj.value;
+}
+
+//カラー選択関数
+function Color(obj){
+	for ( i = 1; i <= 15; i++ ) {
+		id_name = "color_" + i;
+		if (id_name == obj.id){
+			id_name2 = "#" + id_name;
+			document.getElementById(id_name).classList.add('active');
+		} else {
+			document.getElementById(id_name).classList.remove('active');
+		}
+	}
+	if (obj.id == "color_other"){
+		strStrokeStyle = $("#color_other").val();
+	} else {
+		strStrokeStyle = "#" + $(id_name2).css("background-color").match(/\d+/g).map(function(a){return ("0" + parseInt(a).toString(16)).slice(-2)}).join("");
+	}
+	$("#rngLineWidthCircle").attr('fill',strStrokeStyle);
+}
+
+//初期設定
+function mam_draw_init(){
+	try {
+		initLocalStorage();
+
+		can1=document.getElementById("canvas1");
+		can1.addEventListener("touchstart",onDown,false);
+		can1.addEventListener("touchmove",onMove,false);
+		can1.addEventListener("touchend",onUp,false);
+		can1.addEventListener("touchcancel",onUp,false);
+		can1.addEventListener("mousedown",onMouseDown,false);
+		can1.addEventListener("mousemove",onMouseMove,false);
+		can1.addEventListener("mouseup",onMouseUp,false);
+		can1.addEventListener("mouseleave",onMouseUp,false);
+		ct1=can1.getContext("2d");
+
+		can2=document.getElementById("canvas2");
+		can2.addEventListener("touchstart",onDown,false);
+		can2.addEventListener("touchmove",onMove,false);
+		can2.addEventListener("touchend",onUp,false);
+		can2.addEventListener("touchcancel",onUp,false);
+		can2.addEventListener("mousedown",onMouseDown,false);
+		can2.addEventListener("mousemove",onMouseMove,false);
+		can2.addEventListener("mouseup",onMouseUp,false);
+		can2.addEventListener("mouseleave",onMouseUp,false);
+		ct2=can2.getContext("2d");
+	} catch(e) {
+		alert(e.message);
+	}
+}
+
+function onDown(event){
+	if ($('input[name="rdoLayer"]').eq(0).prop("checked")) {
+		mf1=true;
+		if (blReflect) {
+			ox1=event.touches[0].pageX-event.target.getBoundingClientRect().left-scx();
+		} else {
+			ox1=$("#canvas1").width() + (parseInt($("body").css('padding-left')) * 2) - event.touches[0].pageX-event.target.getBoundingClientRect().left-scx();
+		}
+		oy1=event.touches[0].pageY-event.target.getBoundingClientRect().top -scy();
+		event.stopPropagation();
+	} else {
+		mf2=true;
+		if (blReflect) {
+			ox2=event.touches[0].pageX-event.target.getBoundingClientRect().left-scx();
+		} else {
+			ox2=$("#canvas1").width() + (parseInt($("body").css('padding-left')) * 2) - event.touches[0].pageX-event.target.getBoundingClientRect().left-scx();
+		}
+		oy2=event.touches[0].pageY-event.target.getBoundingClientRect().top -scy();
+		event.stopPropagation();
+	}
+	$("#message").hide();
+}
+
+function onMouseDown(event){
+	if ($('input[name="rdoLayer"]').eq(0).prop("checked")) {
+		if (blReflect) {
+			ox1=event.clientX-event.target.getBoundingClientRect().left;
+		} else {
+			ox1=$("#canvas1").width() + (parseInt($("body").css('padding-left')) * 2) - event.clientX-event.target.getBoundingClientRect().left;
+		}
+		oy1=event.clientY-event.target.getBoundingClientRect().top ;
+		mf1=true;
+	} else {
+		if (blReflect) {
+			ox2=event.clientX-event.target.getBoundingClientRect().left;
+		} else {
+			ox2=$("#canvas1").width() + (parseInt($("body").css('padding-left')) * 2) - event.clientX-event.target.getBoundingClientRect().left;
+		}
+		oy2=event.clientY-event.target.getBoundingClientRect().top;
+		mf2=true;
+	}
+	$("#message").hide();
+}
+
+function onMove(event){
+	if ($('input[name="rdoLayer"]').eq(0).prop("checked")) {
+		if(mf1){
+			if (blReflect) {
+				x1=event.touches[0].pageX-event.target.getBoundingClientRect().left-scx();
+			} else {
+				x1=$("#canvas1").width() + (parseInt($("body").css('padding-left')) * 2) - event.touches[0].pageX-event.target.getBoundingClientRect().left-scx();
+			}
+			y1=event.touches[0].pageY-event.target.getBoundingClientRect().top -scy();
+			drawLine();
+			ox1=x1;
+			oy1=y1;
+			event.preventDefault();
+			event.stopPropagation();
+		}
+	} else {
+		if(mf2){
+			if (blReflect) {
+				x2=event.touches[0].pageX-event.target.getBoundingClientRect().left-scx();
+			} else {
+				x2=$("#canvas1").width() + (parseInt($("body").css('padding-left')) * 2) - event.touches[0].pageX-event.target.getBoundingClientRect().left-scx();
+			}
+			y2=event.touches[0].pageY-event.target.getBoundingClientRect().top -scy();
+			drawLine();
+			ox2=x2;
+			oy2=y2;
+			event.preventDefault();
+			event.stopPropagation();
+		}
+	}
+}
+
+function onMouseMove(event){
+	if ($('input[name="rdoLayer"]').eq(0).prop("checked")) {
+		if(mf1){
+			if (blReflect) {
+				x1=event.clientX-event.target.getBoundingClientRect().left;
+			} else {
+				x1=$("#canvas1").width() + (parseInt($("body").css('padding-left')) * 2) - event.clientX-event.target.getBoundingClientRect().left;
+			}
+			y1=event.clientY-event.target.getBoundingClientRect().top;
+			drawLine();
+			ox1=x1;
+			oy1=y1;
+		}
+	} else {
+		if(mf2){
+			if (blReflect) {
+				x2=event.clientX-event.target.getBoundingClientRect().left;
+			} else {
+				x2=$("#canvas1").width() + (parseInt($("body").css('padding-left')) * 2) - event.clientX-event.target.getBoundingClientRect().left;
+			}
+			y2=event.clientY-event.target.getBoundingClientRect().top;
+			drawLine();
+			ox2=x2;
+			oy2=y2;
+		}
+	}
+}
+
+function onUp(event){
+	setLocalStoreage();
+
+	if ($('input[name="rdoLayer"]').eq(0).prop("checked")) {
+		if ((x1 == 0) && (y1 == 0)) {
+			x1=ox1;
+			y1=oy1;
+			drawLine();
+			//event.preventDefault();
+		}
+		mf1=false;
+		x1=0;
+		y1=0;
+		event.stopPropagation();
+	} else {
+		if ((x2 == 0) && (y2 == 0)) {
+			x2=ox2;
+			y2=oy2;
+			drawLine();
+			//event.preventDefault();
+		}
+		mf2=false;
+		x2=0;
+		y2=0;
+		event.stopPropagation();
+	}
+}
+
+function onMouseUp(event){
+	setLocalStoreage();
+
+	if ($('input[name="rdoLayer"]').eq(0).prop("checked")) {
+		if ((x1 == 0) && (y1 == 0)) {
+			x1=ox1;
+			y1=oy1;
+			drawLine();
+		}
+		mf1=false;
+		x1=0;
+		y1=0;
+	} else {
+		if ((x2 == 0) && (y2 == 0)) {
+			x2=ox2;
+			y2=oy2;
+			drawLine();
+		}
+		mf2=false;
+		x2=0;
+		y2=0;
+	}
+}
+
+function drawLine(){
+	//補正値
+	var hosei_x = 0;
+	var hosei_y = 0;
+	if ($('input[name="rdoLayer"]').eq(0).prop("checked")) {
+		ct1.strokeStyle=strStrokeStyle;
+		ct1.lineWidth=strLineWidth;
+		ct1.lineJoin="round";
+		ct1.lineCap="round";
+		if (strStrokeStyle == "#ffffff"){
+			ct1.globalCompositeOperation = "destination-out";
+		} else {
+			ct1.globalCompositeOperation = "source-over";
+		}
+		ct1.beginPath();
+		ct1.moveTo(ox1+hosei_x,oy1+hosei_y);
+		ct1.lineTo(x1+hosei_x,y1+hosei_y);
+		ct1.stroke();
+	} else {
+		ct2.strokeStyle=strStrokeStyle;
+		ct2.lineWidth=strLineWidth;
+		ct2.lineJoin="round";
+		ct2.lineCap="round";
+		if (strStrokeStyle == "#ffffff"){
+			ct2.globalCompositeOperation = "destination-out";
+		} else {
+			ct2.globalCompositeOperation = "source-over";
+		}
+		ct2.beginPath();
+		ct2.moveTo(ox2+hosei_x,oy2+hosei_y);
+		ct2.lineTo(x2+hosei_x,y2+hosei_y);
+		ct2.stroke();
+	}
+}
+
+function scx(){return document.documentElement.scrollLeft || document.body.scrollLeft;}
+function scy(){return document.documentElement.scrollTop  || document.body.scrollTop;}
+mam_draw_init();
+
+//お絵描き開始処理
+function drawCanvas(obj) {
+	try {
+		//下絵
+		$("#base").attr('src', obj.src);
+		$("#base").css({opacity: '0.6'});
+		$("#base").css('transform', 'none');
+
+		//枠線を付ける
+		var Node = $(obj).parent().parent();
+		Node.each(function(){
+			$(this).children().children().removeClass("active");
+		});
+		$(obj).addClass("active");
+
+		//レイヤー1
+		var canvas = $("#canvas1");
+		var context = canvas[0].getContext('2d');
+		//var w = $(window).width();
+		//var h = Math.round(obj.height * (700 / obj.width));
+		var w = 700;
+		var h = 700;
+		$('#canvas1').attr('width', w);
+	    $('#canvas1').css('width', w + 'px');
+		$('#canvas1').attr('height', h);
+	    $('#canvas1').css('height', h + 'px');
+
+		//レイヤー2
+		var canvas = $("#canvas2");
+		var context = canvas[0].getContext('2d');
+		//var w = $(window).width();
+		//var h = Math.round(obj.height * (700 / obj.width));
+		var w = 700;
+		var h = 700;
+		$('#canvas2').attr('width', w);
+	    $('#canvas2').css('width', w + 'px');
+		$('#canvas2').attr('height', h);
+	    $('#canvas2').css('height', h + 'px');
+	} catch(e) {
+		alert(e.message);
+	}
+}
+
+//ファイル送信処理
+function doSaveServer(mode){
+	//呪文反映
+	btnGenerator();
+
+	var prompt = $("#txtp1").val() + $("#txtp1-2").val();
+	var negative_prompt = $("#txtp2").val();
+	let btnLabel = "画像生成開始(連打禁止)";
+
+	if (mode == "img2img") {
+		$(".btnred.red").text(btnLabel);
+		var src1_img = new Image();
+		var src2_img = new Image();
+		src2_img.src = $("#canvas2")[0].toDataURL();
+		src2_img.addEventListener('load', function() {
+			src1_img.src = $("#canvas1")[0].toDataURL();
+			src1_img.addEventListener('load', function() {
+				var dst_canvas = document.createElement('canvas');
+				dst_canvas.width = $("#canvas1").width();
+				dst_canvas.height = $("#canvas1").height();
+				dst_canvas.getContext("2d").fillStyle = 'rgb(255,255,255)';
+				dst_canvas.getContext("2d").fillRect(0, 0, $("#canvas1").width(), $("#canvas1").height());
+				dst_canvas.getContext("2d").drawImage(src2_img, 0, 0, $("#canvas1").width(), $("#canvas1").height());
+				dst_canvas.getContext("2d").drawImage(src1_img, 0, 0, $("#canvas1").width(), $("#canvas1").height());
+				var imageType = "image/png";
+				// base64エンコードされたデータを取得 「data:image/png;base64,iVBORw0k～」
+				var base64 = dst_canvas.toDataURL(imageType);
+				var data = {
+					prompt: prompt,
+					negative_prompt: negative_prompt,
+					seed: 1000,
+					cfg_scale: 7,
+					sampler_index: "Euler a",
+					steps: 30,
+					denoising_strength: 0.75,
+					inpainting_fill: 1,
+					mask_blur: 4,
+					batch_size: 1,
+					inpaint_full_res: false,
+					width: 700,
+					height: 700,
+					include_init_images: false,
+					init_images: [base64]
+				};
+				$("#imgTarget").attr('src', base64);
+				$("#set_image").show();
+
+				// 通信実行
+				$.ajax(
+					{
+						type:"post",
+						url:sd_host+"/sdapi/v1/img2img",
+						data:JSON.stringify(data),
+						contentType: 'application/json',
+						dataType: "json",
+						success: function(json_data) {
+							// 成功時
+							//console.log(json_data["images"][0]);
+								$("#imgAiResult").attr('src', "data:image/png;base64," + json_data["images"][0]);
+							$("#get_image").show();
+							$("html,body").scrollTop($("#get_image").offset().top);
+						},
+						error: function() {
+							// HTTPエラー時
+							//alert("Server Error. Please try again later.");
+						},
+						complete: function() {
+							// 成功・失敗に関わらず通信が終了した際の処理
+							for (let i = 0; i < $(".btnred.red").length; i++) {
+								$(".btnred.red").eq(i).text($(".btnred.red").eq(i).data("label"));
+							}
+						}
+					}
+				);
+			}, false);
+		}, false);
+	} else {
+		$(".btnred.red").text(btnLabel);
+		$("#set_image").hide();
+		var data = {
+			prompt: prompt,
+			negative_prompt: negative_prompt,
+			seed: 1000,
+			width: 700,
+			height: 700,
+			steps: 30,
+			sampler_index: "Euler a"
+		}
+
+		// 通信実行
+		$.ajax(
+			{
+				type:"post",
+				url:sd_host+"/sdapi/v1/txt2img",
+				data:JSON.stringify(data),
+				contentType: 'application/json',
+				dataType: "json",
+				success: function(json_data) {
+					// 成功時
+					//console.log(json_data["images"][0]);
+					$("#imgAiResult").attr('src', "data:image/png;base64," + json_data["images"][0]);
+					$("#get_image").show();
+					$("html,body").scrollTop($("#get_image").offset().top);
+				},
+				error: function() {
+					// HTTPエラー時
+					//alert("Server Error. Please try again later.");
+				},
+				complete: function() {
+					// 成功・失敗に関わらず通信が終了した際の処理
+					for (let i = 0; i < $(".btnred.red").length; i++) {
+						$(".btnred.red").eq(i).text($(".btnred.red").eq(i).data("label"));
+					}
+				}
+			}
+		);
+	}
+
+	//進捗API
+	function log(){
+		// 通信実行
+		$.ajax(
+			{
+				type:"get",
+				url:sd_host+"/sdapi/v1/progress?skip_current_image=false",
+				contentType: 'application/json',
+				dataType: "json",
+				success: function(json_data) {
+					// 成功時
+					if (json_data["progress"] == 0) {
+						//console.log("end");
+						$("#progress").text("画像生成完了。");
+					} else {
+						//現在のステータス
+						//console.log(Math.floor(json_data["progress"]*100) + "%")
+	
+						//残り秒数
+						//console.log(Math.floor(json_data["eta_relative"]) + "s")
+	
+						//生成合計数
+						//console.log(json_data["state"]["job_count"])
+	
+						//生成済み個数
+						//console.log(json_data["state"]["job_no"])
+						$("#progress").text("生成プロセス" + Math.floor(json_data["progress"]*100) + "%/100%,残り時間:" + Math.floor(json_data["eta_relative"]) + "秒");
+						window.setTimeout(log, 500);
+					}
+				},
+				error: function() {
+					// HTTPエラー時
+					alert("SDサーバーとの通信に失敗しました。");
+				},
+				complete: function() {
+					// 成功・失敗に関わらず通信が終了した際の処理
+				}
+			}
+		);
+	}
+
+	$("#system_message").show();
+	window.setTimeout(log, 500);
+	$("html,body").scrollTop($("#system_message").offset().top);
+}
+
+function doSaveCanvas(){
+	var src1_img = new Image();
+	var src2_img = new Image();
+	src2_img.src = $("#canvas2")[0].toDataURL();
+	src2_img.addEventListener('load', function() {
+		src1_img.src = $("#canvas1")[0].toDataURL();
+		src1_img.addEventListener('load', function() {
+			var dst_canvas = document.createElement('canvas');
+			dst_canvas.width = $("#canvas1").width();
+			dst_canvas.height = $("#canvas1").height();
+			dst_canvas.getContext("2d").fillStyle = 'rgb(255,255,255)';
+			dst_canvas.getContext("2d").fillRect(0, 0, $("#canvas1").width(), $("#canvas1").height());
+			dst_canvas.getContext("2d").drawImage(src2_img, 0, 0, $("#canvas1").width(), $("#canvas1").height());
+			dst_canvas.getContext("2d").drawImage(src1_img, 0, 0, $("#canvas1").width(), $("#canvas1").height());
+			var imageType = "image/png";
+			var fileName = "download.png";
+			// base64エンコードされたデータを取得 「data:image/png;base64,iVBORw0k～」
+			var base64 = dst_canvas.toDataURL(imageType);
+			// base64データをblobに変換
+			var blob = Base64toBlob(base64);
+			// blobデータをa要素を使ってダウンロード
+			saveBlob(blob, fileName);
+		}, false);
+	}, false);
+}
+
+// Base64データをBlobデータに変換
+function Base64toBlob(base64){
+	// カンマで分割して以下のようにデータを分ける
+	// tmp[0] : データ形式（data:image/png;base64）
+	// tmp[1] : base64データ（iVBORw0k～）
+	var tmp = base64.split(',');
+	// base64データの文字列をデコード
+	var data = atob(tmp[1]);
+	// tmp[0]の文字列（data:image/png;base64）からコンテンツタイプ（image/png）部分を取得
+	var mime = tmp[0].split(':')[1].split(';')[0];
+	//  1文字ごとにUTF-16コードを表す 0から65535 の整数を取得
+	var buf = new Uint8Array(data.length);
+	for (var i = 0; i < data.length; i++) {
+		buf[i] = data.charCodeAt(i);
+	}
+	// blobデータを生成
+	var blob = new Blob([buf], { type: mime });
+	return blob;
+}
+
+// 画像のダウンロード
+function saveBlob(blob, fileName){
+	var url = (window.URL || window.webkitURL);
+	// ダウンロード用のURL生成
+	var dataUrl = url.createObjectURL(blob);
+	// イベント生成
+	var event = document.createEvent("MouseEvents");
+	event.initMouseEvent("click", true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+	// a要素を生成
+	var a = document.createElementNS("http://www.w3.org/1999/xhtml", "a");
+	// ダウンロード用のURLセット
+	a.href = dataUrl;
+	// ファイル名セット
+	a.download = fileName;
+	// イベントの発火
+	a.dispatchEvent(event);
+}
+
+document.getElementById('rngLineWidth').addEventListener('input', (event) => {
+	$("#rngLineWidthCircle").attr('fill',strStrokeStyle);
+	document.getElementById('rngLineWidthCircle').setAttribute('r', parseFloat(event.target.value) / 2);
+});
+
+function updateCircle(value) {
+	const circle = document.querySelector('.dotcircle');
+	const slider = document.querySelector('.linerange');
+	const sliderWidth = slider.offsetWidth - circle.offsetWidth;
+	const circlePosition = (value / 100) * sliderWidth;
+	const circleSize = 20 + (value / 100) * 30;
+	circle.style.width = circleSize + 'px';
+	circle.style.height = circleSize + 'px';
+	circle.style.transform = 'translate(-50%, -50%)';
+}
+
+function doLayerChange(idx){
+	$('input[name="rdoLayer"]').eq(idx-1).prop('checked', true)
+}
+
+function doLayerVisible(idx){
+	if ($("#canvas"+idx).is(':visible')) {
+		$("img.iconLayer"+idx+"Visible").attr("src","./img/002-hide.png");
+	} else {
+		$("img.iconLayer"+idx+"Visible").attr("src","./img/001-view.png");
+	}
+	$("#canvas"+idx).toggle();
+//	event.returnValue = false; 
+	event.cancelBubble = true; 
+}
+
+document.onkeydown = function(e) { 
+	var keycode,shift, ctrl,alt; 
+
+	// Mozilla(Firefox, NN) and Opera
+	if (e != null) { 
+		keycode = e.which; 
+		ctrl = typeof e.modifiers == 'undefined' ? ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) : e.modifiers & Event.CONTROL_MASK;
+		shift = typeof e.modifiers == 'undefined' ? e.shiftKey : e.modifiers & Event.SHIFT_MASK; 
+		alt = typeof e.modifiers == 'undefined' ? e.altKey : e.modifiers & Event.ALT_MASK; 
+		e.stopPropagation(); 
+	} else { 
+		keycode = event.keyCode; 
+		ctrl = event.ctrlKey; 
+		shift = event.shiftKey; 
+		alt = event.altKey; 
+		event.cancelBubble = true; 
+	}
+	// キーコードの文字を取得 
+	keychar = String.fromCharCode(keycode).toUpperCase(); 
+//console.log(keychar)
+
+	// ctrl同時押しの場合 
+	if (ctrl) { 
+		if (keychar == "Z") {
+			doPrevCanvas();
+		}
+		if (keychar == "&") {
+			$('input[name="rdoLayer"]').eq(0).trigger("click");
+		}
+		if (keychar == "(") {
+			$('input[name="rdoLayer"]').eq(1).trigger("click");
+		}
+		if (keychar == "'") {
+			if(parseInt($('#rngLineWidth').val()) <= parseInt($('#rngLineWidth').attr("max"))){
+				$('#rngLineWidth').val(parseInt($('#rngLineWidth').val())+1);
+				$('#rngLineWidth').trigger("input");
+			}
+		}
+		if (keychar == "%") {
+			if(parseInt($('#rngLineWidth').val()) >= parseInt($('#rngLineWidth').attr("min"))){
+				$('#rngLineWidth').val(parseInt($('#rngLineWidth').val())-1);
+				$('#rngLineWidth').trigger("input");
+			}
+		}
+		if (keychar == " ") {
+			$("#color_other").trigger("click");
+		}
+	}
+
+	// shift同時押しの場合 
+	if (shift) { 
+		if ((keychar == "'")||(keychar == "%")) {
+			doReflect();
+		}
+		if ((keychar == "N")||(keychar == "C")) {
+			doClear();
+		}
+		if (keychar == " ") {
+			doFullscreen();
+		}
+		if (keychar == "S") {
+			doSaveCanvas();
+		}
+	}
+}
+</script>
+</body>
+</html>
