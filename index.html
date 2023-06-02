@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="utf-8">
+<title>お絵かきできるSNS</title>
+<link rel="manifest" href="manifest.json">
+<style>
+html{
+	background-color:#F6DDC9;
+}
+body {
+	background-color:#F6DDC9;
+	margin:0;
+	padding:8px;
+}
+.contents{
+	display: flex;
+}
+.palette{
+	padding-top:10px;
+	padding-left:15px;
+}
+ul {
+	padding-left: 0;
+	margin:0;
+	list-style: none;
+}
+#canvasarea{
+	width: 800px;
+	height: 600px;
+	background-color:#FFF;
+}
+#canvasarea:after, #canvasarea:before {
+	content: "";
+	clear: both;
+	display: block;
+}
+#canvas{
+	z-index:2;
+}
+#canvas2{
+	z-index:1;
+}
+#canvas2,#canvas {
+	width: 800px;
+	height: 600px;
+	position: absolute;
+}
+#toolarea{
+	margin-top:15px;
+}
+.btn {
+	display: inline-block;
+	padding: 10px 15px;
+	text-decoration: none;
+	color: #FFF;
+	background: #CB002E;
+	border-radius:4px;
+}
+
+.palette_inner {
+	position: relative;
+	display: inline-block;
+	margin-bottom:20px;
+}
+
+.palette_wrap {
+	background: #FFF;
+	border-radius:3px;
+	margin: 0 auto;
+	padding: 30px 20px;
+	width:170px;
+}
+.palette_wrap .palette_name {
+	position: absolute;
+	top: -10px;
+	left: 10px;
+	width: 180px;
+	background-color: #F8537B;
+	text-align:center;
+	padding:5px;
+	color:#FFF;
+}
+#palette_colors{
+	margin-bottom:3px;
+}
+
+#palette_colors td{
+	width:25px;
+	height:25px;
+	border-style:solid;
+	border-color:#fff;
+	border-width:2px;
+}
+
+#palette_colors td#color_1{
+	background-color:#000000;
+}
+#palette_colors td#color_2{
+	background-color:#808080;
+}
+#palette_colors td#color_3{
+	background-color:#800000;
+}
+#palette_colors td#color_4{
+	background-color:#FF0000;
+}
+#palette_colors td#color_5{
+	background-color:#800080;
+}
+#palette_colors td#color_6{
+	background-color:#FF00FF;
+}
+#palette_colors td#color_7{
+	background-color:#008000;
+}
+#palette_colors td#color_8{
+	background-color:#00FF00;
+}
+#palette_colors td#color_9{
+	background-color:#808000;
+}
+#palette_colors td#color_10{
+	background-color:#FFFF00;
+}
+#palette_colors td#color_11{
+	background-color:#000080;
+}
+#palette_colors td#color_12{
+	background-color:#0000FF;
+}
+#palette_colors td#color_13{
+	background-color:#008080;
+}
+#palette_colors td#color_14{
+	background-color:#EFC3AD;
+}
+#palette_colors td#color_15{
+	background-color:#FFEDDB;
+}
+
+#palette_colors .active{
+	border-style:solid;
+	border-color:#ff0000;
+	border-width:2px;
+}
+</style>
+</head>
+<body id="screen">
+<div class="contents">
+<div class="main">
+<div id="canvasarea">
+<canvas id="canvas" width="800" height="600"></canvas>
+<canvas id="canvas2" width="800" height="600"></canvas>
+<!--/#canvasarea--></div>
+<div id="toolarea">
+<a href="#" class="btn" onclick="doPrevCanvas();">１つ前に戻す</a>
+<a href="#" class="btn" onclick="doClear();">最初から書き直す</a>
+<a href="#" class="btn" onclick="doReflect();">左右反転</a>
+<a href="#" class="btn" onclick="doFullscreen();">フルスクリーン</a>
+<a href="#" class="btn" onclick="doSaveCanvas();">PNGで保存</a>
+<!--/#toolarea--></div>
+<!--/.main--></div>
+<div class="palette">
+
+<ul>
+<li>
+<div class="palette_inner">
+<div class="palette_wrap">
+<div class="palette_name">カラーパレット<!--/.palette_name--></div>
+<table id="palette_colors">
+<tr>
+<td id="color_1" class="active" onClick="Color(this);"></td>
+<td id="color_2" onClick="Color(this);"></td>
+<td id="color_3" onClick="Color(this);"></td>
+<td id="color_4" onClick="Color(this);"></td>
+<td id="color_5" onClick="Color(this);"></td>
+</tr>
+<tr>
+<td id="color_6" onClick="Color(this);"></td>
+<td id="color_7" onClick="Color(this);"></td>
+<td id="color_8" onClick="Color(this);"></td>
+<td id="color_9" onClick="Color(this);"></td>
+<td id="color_10" onClick="Color(this);"></td>
+</tr>
+<tr>
+<td id="color_11" onClick="Color(this);"></td>
+<td id="color_12" onClick="Color(this);"></td>
+<td id="color_13" onClick="Color(this);"></td>
+<td id="color_14" onClick="Color(this);"></td>
+<td id="color_15" onClick="Color(this);"></td>
+</tr>
+</table>
+その他：<input type="color" id="color_other" name="color" onChange="Color(this);">
+<!--/.palette_wrap--></div>
+<!--/.palette_inner--></div>
+</li>
+<li>
+<div class="palette_inner">
+<div class="palette_wrap">
+<div class="palette_name">線の太さ<!--/.palette_name--></div>
+<input id="rngLineWidth" type="range" value="1" min="1" max="10" step="1" oninput="LineWidth(this)">
+<output id="LineWidthValue">1</output>pixel
+<!--/.palette_wrap--></div>
+<!--/.palette_inner--></div>
+</li>
+<li>
+<div class="palette_inner">
+<div class="palette_wrap">
+<div class="palette_name">レイヤー<!--/.palette_name--></div>
+<p><label><input type="radio" name="rdoLayer" checked>上レイヤー</label></p>
+<p><label><input type="radio" name="rdoLayer">下レイヤー</label></p>
+<!--/.palette_wrap--></div>
+<!--/.palette_inner--></div>
+</li>
+</ul>
+<!--/.palette--></div>
+<!--/.contents--></div>
+
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<script>
+var ox=0,oy=0,x=0,y=0;
+var mf=false;
+var ct;
+
+var ox2=0,oy2=0,x2=0,y2=0;
+var mf2=false;
+var ct2;
+
+//カラー設定用変数（デフォルトは黒）
+var strStrokeStyle="#000000";
+
+//線の太さ用変数（デフォルトは1px）
+var strLineWidth="1";
+
+// ストレージの初期化
+var myStorage = localStorage;
+
+function initLocalStorage(){
+	myStorage.setItem("__layer", JSON.stringify([]));
+	myStorage.setItem("__layer2", JSON.stringify([]));
+}
+
+function setLocalStoreage(){
+	var png = $("#canvas")[0].toDataURL();
+	var logs = JSON.parse(myStorage.getItem("__layer"));
+	setTimeout(function(){
+		logs.unshift({png});
+		myStorage.setItem("__layer", JSON.stringify(logs));
+	}, 0);
+	var png2 = $("#canvas2")[0].toDataURL();
+	var logs2 = JSON.parse(myStorage.getItem("__layer2"));
+	setTimeout(function(){
+		logs2.unshift({png2});
+		myStorage.setItem("__layer2", JSON.stringify(logs2));
+	}, 0);
+}
+
+function doPrevCanvas(){
+	var logs = JSON.parse(myStorage.getItem("__layer"));
+	if(logs.length > 0){
+		logs.shift();
+		setTimeout(function(){
+			myStorage.setItem("__layer", JSON.stringify(logs));
+			ct.clearRect(0, 0, $("#canvas").width(), $("#canvas").height());
+			if (logs.length == 0) {
+				draw("canvas",logs["png"]);
+			} else {
+				draw("canvas",logs[0]["png"]);
+			}
+		}, 0);
+	}
+	var logs2 = JSON.parse(myStorage.getItem("__layer2"));
+	if(logs2.length > 0){
+		logs2.shift();
+		setTimeout(function(){
+			myStorage.setItem("__layer2", JSON.stringify(logs2));
+			ct2.clearRect(0, 0, $("#canvas2").width(), $("#canvas2").height());
+			if (logs2.length == 0) {
+				draw("canvas2",logs2["png2"]);
+			} else {
+				draw("canvas2",logs2[0]["png2"]);
+			}
+		}, 0);
+	}
+}
+
+function draw(target,src) {
+	var img = new Image();
+	img.src = src;
+	img.onload = function() {
+		if (target == "canvas"){
+			ct.drawImage(img, 0, 0);
+		} else {
+			ct2.drawImage(img, 0, 0);
+		}
+	}
+}
+
+function doClear(){
+	if(confirm('本当にいいんですね？')){
+		ct.clearRect(0, 0, $("#canvas").width(), $("#canvas").height());
+		ct2.clearRect(0, 0, $("#canvas2").width(), $("#canvas2").height());
+	}
+}
+
+var blReflect = true;
+function doReflect(){
+	if (blReflect){
+		$("#canvas").css('transform', 'scale(-1, 1)');
+		$("#canvas2").css('transform', 'scale(-1, 1)');
+		blReflect = false;
+	} else {
+		$("#canvas").css('transform', 'scale(1, 1)');
+		$("#canvas2").css('transform', 'scale(1, 1)');
+		blReflect = true;
+	}
+}
+
+var blFullscreen = true;
+function doFullscreen(){
+	var elem = document.getElementById("screen");
+	if (blFullscreen){
+		if (elem.requestFullscreen) {
+		  elem.requestFullscreen();
+		} else if (elem.webkitRequestFullScreen) {
+		  elem.webkitRequestFullScreen();
+		} else if (elem.mozRequestFullScreen) {
+		  elem.mozRequestFullScreen();
+		} else if (elem.msRequestFullscreen) {
+		  elem.msRequestFullscreen();
+		}
+		blFullscreen = false;
+	} else {
+		if (document.webkitCancelFullScreen) {
+			document.webkitCancelFullScreen();
+		} else if (document.mozCancelFullScreen) {
+			document.mozCancelFullScreen();
+		} else if (document.msExitFullscreen) {
+			document.msExitFullscreen();
+		} else if(document.cancelFullScreen) {
+			document.cancelFullScreen();
+		} else if(document.exitFullscreen) {
+			document.exitFullscreen();
+		}
+		blFullscreen = true;
+	}
+}
+
+function LineWidth(obj){
+	document.getElementById('LineWidthValue').value=obj.value;
+	strLineWidth=obj.value;
+}
+
+//カラー選択関数
+function Color(obj){
+	for ( i = 1; i <= 15; i++ ) {
+		id_name = "color_" + i;
+		if (id_name == obj.id){
+			id_name2 = "#" + id_name;
+			document.getElementById(id_name).classList.add('active');
+		} else {
+			document.getElementById(id_name).classList.remove('active');
+		}
+	}
+	if (obj.id == "color_other"){
+		strStrokeStyle = $("#color_other").val();
+	} else {
+		strStrokeStyle = "#" + $(id_name2).css("background-color").match(/\d+/g).map(function(a){return ("0" + parseInt(a).toString(16)).slice(-2)}).join("");
+	}
+}
+
+//初期設定
+function mam_draw_init(){
+	initLocalStorage();
+
+	var can;
+	can=document.getElementById("canvas");
+	can.addEventListener("touchstart",onDown,false);
+	can.addEventListener("touchmove",onMove,false);
+	can.addEventListener("touchend",onUp,false);
+	can.addEventListener("mousedown",onMouseDown,false);
+	can.addEventListener("mousemove",onMouseMove,false);
+	can.addEventListener("mouseup",onMouseUp,false);
+	ct=can.getContext("2d");
+
+	var can2;
+	can2=document.getElementById("canvas2");
+	can2.addEventListener("touchstart",onDown,false);
+	can2.addEventListener("touchmove",onMove,false);
+	can2.addEventListener("touchend",onUp,false);
+	can2.addEventListener("mousedown",onMouseDown,false);
+	can2.addEventListener("mousemove",onMouseMove,false);
+	can2.addEventListener("mouseup",onMouseUp,false);
+	ct2=can2.getContext("2d");
+}
+
+function onDown(event){
+	if ($('input[name="rdoLayer"]').eq(0).prop("checked")) {
+		if(mf){
+			if (blReflect) {
+				x=event.touches[0].pageX-event.target.getBoundingClientRect().left-scx();
+			} else {
+				x=$("#canvas").width() + (parseInt($("body").css('padding-left')) * 2) - event.touches[0].pageX-event.target.getBoundingClientRect().left-scx();
+			}
+			y=event.touches[0].pageY-event.target.getBoundingClientRect().top -scy();
+			drawLine();
+			ox=x;
+			oy=y;
+			event.preventDefault();
+			event.stopPropagation();
+		}
+	} else {
+		if(mf2){
+			if (blReflect) {
+				x2=event.touches[0].pageX-event.target.getBoundingClientRect().left-scx();
+			} else {
+				x2=$("#canvas").width() + (parseInt($("body").css('padding-left')) * 2) - event.touches[0].pageX-event.target.getBoundingClientRect().left-scx();
+			}
+			y2=event.touches[0].pageY-event.target.getBoundingClientRect().top -scy();
+			drawLine();
+			ox2=x2;
+			oy2=y2;
+			event.preventDefault();
+			event.stopPropagation();
+		}
+	}
+}
+
+function onMouseDown(event){
+	if ($('input[name="rdoLayer"]').eq(0).prop("checked")) {
+		if (blReflect) {
+			ox=event.clientX-event.target.getBoundingClientRect().left;
+		} else {
+			ox=$("#canvas").width() + (parseInt($("body").css('padding-left')) * 2) - event.clientX-event.target.getBoundingClientRect().left;
+		}
+		oy=event.clientY-event.target.getBoundingClientRect().top ;
+		mf=true;
+	} else {
+		if (blReflect) {
+			ox2=event.clientX-event.target.getBoundingClientRect().left;
+		} else {
+			ox2=$("#canvas").width() + (parseInt($("body").css('padding-left')) * 2) - event.clientX-event.target.getBoundingClientRect().left;
+		}
+		oy2=event.clientY-event.target.getBoundingClientRect().top;
+		mf2=true;
+	}
+}
+
+function onMove(event){
+	if ($('input[name="rdoLayer"]').eq(0).prop("checked")) {
+		if(mf){
+			if (blReflect) {
+				x=event.clientX-event.target.getBoundingClientRect().left;
+			} else {
+				x=$("#canvas").width() + (parseInt($("body").css('padding-left')) * 2) - event.clientX-event.target.getBoundingClientRect().left;
+			}
+			y=event.clientY-event.target.getBoundingClientRect().top ;
+			drawLine();
+			ox=x;
+			oy=y;
+		}
+	} else {
+		if(mf2){
+			if (blReflect) {
+				x2=event.clientX-event.target.getBoundingClientRect().left;
+			} else {
+				x2=$("#canvas").width() + (parseInt($("body").css('padding-left')) * 2) - event.clientX-event.target.getBoundingClientRect().left;
+			}
+			y2=event.clientY-event.target.getBoundingClientRect().top;
+			drawLine();
+			ox2=x2;
+			oy2=y2;
+		}
+	}
+}
+
+function onMouseMove(event){
+	if ($('input[name="rdoLayer"]').eq(0).prop("checked")) {
+		if(mf){
+			if (blReflect) {
+				x=event.clientX-event.target.getBoundingClientRect().left;
+			} else {
+				x=$("#canvas").width() + (parseInt($("body").css('padding-left')) * 2) - event.clientX-event.target.getBoundingClientRect().left;
+			}
+			y=event.clientY-event.target.getBoundingClientRect().top ;
+			drawLine();
+			ox=x;
+			oy=y;
+		}
+	} else {
+		if(mf2){
+			if (blReflect) {
+				x2=event.clientX-event.target.getBoundingClientRect().left;
+			} else {
+				x2=$("#canvas").width() + (parseInt($("body").css('padding-left')) * 2) - event.clientX-event.target.getBoundingClientRect().left;
+			}
+			y2=event.clientY-event.target.getBoundingClientRect().top;
+			drawLine();
+			ox2=x2;
+			oy2=y2;
+		}
+	}
+}
+
+function onUp(event){
+	setLocalStoreage();
+	if ($('input[name="rdoLayer"]').eq(0).prop("checked")) {
+		mf=false;
+		event.stopPropagation();
+	} else {
+		mf2=false;
+		event.stopPropagation();
+	}
+}
+
+function onMouseUp(event){
+	setLocalStoreage();
+	if ($('input[name="rdoLayer"]').eq(0).prop("checked")) {
+		mf=false;
+	} else {
+		mf2=false;
+	}
+}
+
+function drawLine(){
+	if ($('input[name="rdoLayer"]').eq(0).prop("checked")) {
+		ct.strokeStyle=strStrokeStyle;
+		ct.lineWidth=strLineWidth;
+		ct.lineJoin="round";
+		ct.lineCap="round";
+		ct.beginPath();
+		ct.moveTo(ox,oy);
+		ct.lineTo(x,y);
+		ct.stroke();
+	} else {
+		ct2.strokeStyle=strStrokeStyle;
+		ct2.lineWidth=strLineWidth;
+		ct2.lineJoin="round";
+		ct2.lineCap="round";
+		ct2.beginPath();
+		ct2.moveTo(ox2,oy2);
+		ct2.lineTo(x2,y2);
+		ct2.stroke();
+	}
+}
+
+function scx(){return document.documentElement.scrollLeft || document.body.scrollLeft;}
+function scy(){return document.documentElement.scrollTop  || document.body.scrollTop ;}
+mam_draw_init();
+
+function doSaveCanvas(){
+	var src1_img = new Image();
+	var src2_img = new Image();
+	src1_img.src = $("#canvas")[0].toDataURL();
+	src1_img.addEventListener('load', function() {
+		src2_img.src = $("#canvas2")[0].toDataURL();
+		src2_img.addEventListener('load', function() {
+			var dst_canvas = document.createElement('canvas');
+			dst_canvas.width = $("#canvas").width();
+			dst_canvas.height = $("#canvas").height();
+			dst_canvas.getContext("2d").drawImage(src1_img, 0, 0, $("#canvas").width(), $("#canvas").height());
+			dst_canvas.getContext("2d").drawImage(src2_img, 0, 0, $("#canvas").width(), $("#canvas").height());
+
+			var imageType = "image/png";
+			var fileName = "download.png";
+			// base64エンコードされたデータを取得 「data:image/png;base64,iVBORw0k～」
+			var base64 = dst_canvas.toDataURL(imageType);
+			// base64データをblobに変換
+			var blob = Base64toBlob(base64);
+			// blobデータをa要素を使ってダウンロード
+			saveBlob(blob, fileName);
+		}, false);
+	}, false);
+}
+
+// Base64データをBlobデータに変換
+function Base64toBlob(base64){
+	// カンマで分割して以下のようにデータを分ける
+	// tmp[0] : データ形式（data:image/png;base64）
+	// tmp[1] : base64データ（iVBORw0k～）
+	var tmp = base64.split(',');
+	// base64データの文字列をデコード
+	var data = atob(tmp[1]);
+	// tmp[0]の文字列（data:image/png;base64）からコンテンツタイプ（image/png）部分を取得
+	var mime = tmp[0].split(':')[1].split(';')[0];
+	//  1文字ごとにUTF-16コードを表す 0から65535 の整数を取得
+	var buf = new Uint8Array(data.length);
+	for (var i = 0; i < data.length; i++) {
+		buf[i] = data.charCodeAt(i);
+	}
+	// blobデータを作成
+	var blob = new Blob([buf], { type: mime });
+	return blob;
+}
+
+// 画像のダウンロード
+function saveBlob(blob, fileName){
+	var url = (window.URL || window.webkitURL);
+	// ダウンロード用のURL作成
+	var dataUrl = url.createObjectURL(blob);
+	// イベント作成
+	var event = document.createEvent("MouseEvents");
+	event.initMouseEvent("click", true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+	// a要素を作成
+	var a = document.createElementNS("http://www.w3.org/1999/xhtml", "a");
+	// ダウンロード用のURLセット
+	a.href = dataUrl;
+	// ファイル名セット
+	a.download = fileName;
+	// イベントの発火
+	a.dispatchEvent(event);
+}
+
+document.onkeydown = function(e) { 
+	var keycode,shift,ctrl,alt; 
+
+	if (e != null) { 
+		keycode = e.which; 
+		ctrl = typeof e.modifiers == 'undefined' ? ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) : e.modifiers & Event.CONTROL_MASK;
+		shift = typeof e.modifiers == 'undefined' ? e.shiftKey : e.modifiers & Event.SHIFT_MASK; 
+		alt = typeof e.modifiers == 'undefined' ? e.altKey : e.modifiers & Event.ALT_MASK; 
+		e.stopPropagation(); 
+	} else { 
+		keycode = event.keyCode; 
+		ctrl = event.ctrlKey; 
+		shift = event.shiftKey; 
+		alt = event.altKey; 
+		event.cancelBubble = true; 
+	}
+	keychar = String.fromCharCode(keycode).toUpperCase(); 
+
+	// ctrl同時押しの場合 
+	if (ctrl) { 
+		if (keychar == "Z") {
+			doPrevCanvas();
+		}
+		if (keychar == "&") {
+			$('input[name="rdoLayer"]').eq(0).trigger("click");
+		}
+		if (keychar == "(") {
+			$('input[name="rdoLayer"]').eq(1).trigger("click");
+		}
+		if (keychar == "'") {
+			if(parseInt($('#rngLineWidth').val()) <= parseInt($('#rngLineWidth').attr("max"))){
+				$('#rngLineWidth').val(parseInt($('#rngLineWidth').val())+1);
+				$('#rngLineWidth').trigger("input");
+			}
+		}
+		if (keychar == "%") {
+			if(parseInt($('#rngLineWidth').val()) >= parseInt($('#rngLineWidth').attr("min"))){
+				$('#rngLineWidth').val(parseInt($('#rngLineWidth').val())-1);
+				$('#rngLineWidth').trigger("input");
+			}
+		}
+		if (keychar == " ") {
+			$("#color_other").trigger("click");
+		}
+	}
+
+	// shift同時押しの場合 
+	if (shift) { 
+		if ((keychar == "'")||(keychar == "%")) {
+			doReflect();
+		}
+		if ((keychar == "N")||(keychar == "C")) {
+			doClear();
+		}
+		if (keychar == " ") {
+			doFullscreen();
+		}
+		if (keychar == "S") {
+			doSaveCanvas();
+		}
+	}
+}
+</script>
+</body>
+</html>
