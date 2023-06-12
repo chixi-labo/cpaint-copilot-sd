@@ -395,7 +395,19 @@ function btnGenerator(){
 		}
 	}
 
-	//シチュエーション
+	//天候
+	if (document.frmMain.rdoWeather.value != ""){
+		for(var i=0; i<document.frmMain.rdoWeather.length; i++){
+			if(document.frmMain.rdoWeather[i].checked){
+				if (strPronmpt != ""){
+					strPronmpt = strPronmpt + ",";
+				}
+				strPronmpt = strPronmpt + document.frmMain.rdoWeather[i].value;
+			}
+		}
+	}
+
+	//シチュエーション（屋外/屋内）
 	if (document.frmMain.rdoSituation.value != ""){
 		for(var i=0; i<document.frmMain.rdoSituation.length; i++){
 			if(document.frmMain.rdoSituation[i].checked){
@@ -696,6 +708,26 @@ function btnGenerator(){
 
 <fieldset>
 <legend>シチュエーション</legend>
+<fieldset>
+<legend>天候</legend>
+<ul>
+<li><label><input type="radio" name="rdoWeather" value="" checked>設定なし</label></li>
+<li><label><input type="radio" name="rdoWeather" value="sunny">晴れ</label></li>
+<li><label><input type="radio" name="rdoWeather" value="fine weather">快晴</label></li>
+<li><label><input type="radio" name="rdoWeather" value="cloudy">曇り</label></li>
+<li><label><input type="radio" name="rdoWeather" value="rain">雨</label></li>
+<li><label><input type="radio" name="rdoWeather" value="light rain">小雨</label></li>
+<li><label><input type="radio" name="rdoWeather" value="heavy rain">大雨</label></li>
+<li><label><input type="radio" name="rdoWeather" value="sky">青空</label></li>
+<li><label><input type="radio" name="rdoWeather" value="night sky">夜空</label></li>
+<li><label><input type="radio" name="rdoWeather" value="wind">風</label></li>
+<li><label><input type="radio" name="rdoWeather" value="starry sky">星空</label></li>
+<li><label><input type="radio" name="rdoWeather" value="night,firework">花火</label></li>
+<!--
+<li><label><input type="radio" name="rdoWeather" value=""></label></li>
+-->
+</ul>
+</fieldset>
 <fieldset>
 <legend>屋外</legend>
 <ul>
